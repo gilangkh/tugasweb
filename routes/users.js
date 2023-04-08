@@ -57,7 +57,7 @@ router.post('/', async (req, res, next) => {
     let connection = db.connection;
     
     //2. Ambil id data yang akan diedit
-    let id = req.params.id;
+    let user_id = req.params.user_id;
     
     //3. Ambil data update
     let name = req.body.username;
@@ -70,7 +70,7 @@ router.post('/', async (req, res, next) => {
     let sql = "UPDATE users SET name=?, email=?, password=?, avatar=?, active=?, updated_at = now() WHERE id=?";
     connection.query(
       sql, 
-      [name, email, password, active,sign_img, id], 
+      [name, email, password, active,sign_img, user_id], 
       (err, rows, fields) => {
         if(err) throw err;
         
@@ -89,7 +89,7 @@ router.post('/', async (req, res, next) => {
       let connection = db.connection;
       
       //2. Ambil ID data yang akan dihapus (M DZAKY)
-      let id = req.params.id;
+      let user_id = req.params.user_id;
       
       //3. Hapus data dari database
       let sql = 'DELETE FROM users WHERE id=?';

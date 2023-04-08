@@ -3,7 +3,7 @@ const sequelize = new Sequelize('mysql://root@localhost/pwebb');
 
 const dokument = sequelize.define('dokument', 
 {
-    id: {
+    dokument_id: {
         type:DataTypes.STRING,
         primaryKey: true,
         autoIncrement: true

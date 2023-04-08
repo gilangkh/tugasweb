@@ -3,7 +3,7 @@ const sequelize = new Sequelize('mysql://root@localhost/pwebb');
 
 const User = sequelize.define('User', 
 {
-    id: {
+    user_id: {
         type:DataTypes.STRING,
         primaryKey: true,
         autoIncrement: true
