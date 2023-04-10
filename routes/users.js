@@ -3,6 +3,10 @@ var router = express.Router();
 var db = require('../modules/db');
 var User = require('../models/users');
 const { response } = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+
 
 /* GET users listing. */
 router.get('/', (req, res, next) => {
@@ -103,6 +107,27 @@ router.post('/', async (req, res, next) => {
         
         res.json(response);
       });
+    });
+
+    router.post('/login', async (req, res) => {
+      const { email, password } = req.body;
+    
+      // Cek apakah user dengan email yang diberikan terdaftar di database
+      const user = await User.findOne({ where: { email } });
+      if (!user) {
+        return res.status(401).json({ message: 'Email atau password salah' });
+      }
+    
+      // Cek apakah password yang diberikan sesuai dengan yang tersimpan di database
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: 'Email atau password salah' });
+      }
+    
+      // Buat token JWT
+      const token = jwt.sign({ userId: user.user_id }, 'rahasia');
+    
+      res.json({ token });
     });
    
     module.exports = router;

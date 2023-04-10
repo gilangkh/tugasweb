@@ -10,7 +10,7 @@ router.get('/', (req, res, next) => {
   //Koneksi ke database
   let connection = db.connection;
   
-  let sql = "SELECT user_id, username, email, active FROM users";
+  let sql = "SELECT dokument_id, name, filename, description FROM dokuments";
   connection.query(sql, (err, rows, fields) => {
     if(err) throw err;
     
@@ -25,19 +25,16 @@ router.post('/', async (req, res, next) => {
   // let connection = db.connection;
   
   //2. Ambil data yang akan ditambahkan
-  let username = req.body.username;
-  let email = req.body.email;
-  let password = req.body.password;
-  let active = req.body.active;
-  let sign_img = req.body.sign_img;
-  
+
+  let name = req.body.email;
+  let filename = req.body.filename;
+  let description = req.body.description
+
   //3. Tambahkan data ke dalam database
   await User.create({
-    username: username,
-    email: email,
-    password: password,
-    active: active,
-    sign_img: sign_img
+    name : name,
+    filename : filename,
+    description : description,
   
   }).then((res) => {
     let response = {
@@ -60,14 +57,12 @@ router.post('/', async (req, res, next) => {
     let user_id = req.params.user_id;
     
     //3. Ambil data update
-    let username = req.body.username;
-    let email = req.body.email;
-    let password = req.body.password;
-    let sign_img = req.body.sign_img;
-    let active = req.body.active;
+    let name = req.body.name;
+    let filename = req.body.filename;
+    let description = req.body.description;
     
     //4. Update data di database
-    let sql = "UPDATE users SET username=?, email=?, password=?, avatar=?, active=?, updated_at = now() WHERE user_id=?";
+    let sql = "UPDATE users SET name=?, filename=?, description=?, updated_at = now() WHERE dokument_id=?";
     connection.query(
       sql, 
       [username, email, password, active,sign_img, user_id], 
