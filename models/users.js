@@ -1,6 +1,6 @@
 const {Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
-const sequelize = new Sequelize('mysql://root@localhost/pwebb');
+const sequelize = new Sequelize('mysql://root@localhost/dokumen');
 
 const User = sequelize.define('User', 
 {

@@ -1,5 +1,5 @@
 const {Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('mysql://root@localhost/pwebb');
+const sequelize = new Sequelize('mysql://root@localhost/dokumen');
 
 const Dokument = sequelize.define('Dokument', 
 {
@@ -30,7 +30,7 @@ const Dokument = sequelize.define('Dokument',
     }
 }, 
 {
-    tableName: 'documents',
+    tableName: 'dokuments',
     timestamps: true,
     updatedAt: 'updated_at',
     createdAt: 'created_at'

@@ -29,6 +29,7 @@ router.post('/', async (req, res, next) => {
   // let connection = db.connection;
   
   //2. Ambil data yang akan ditambahkan
+  let user_id = req.body.user_id;
   let username = req.body.username;
   let email = req.body.email;
   let password = req.body.password;
@@ -37,6 +38,7 @@ router.post('/', async (req, res, next) => {
   
   //3. Tambahkan data ke dalam database
   await User.create({
+    user_id : user_id,
     username: username,
     email: email,
     password: password,
@@ -72,7 +74,7 @@ router.post('/', async (req, res, next) => {
     let active = req.body.active;
     
     //4. Update data di database
-    let sql = "UPDATE users SET username=?, email=?, password=?, avatar=?, active=?, updated_at = now() WHERE user_id=?";
+    let sql = "UPDATE users SET username=?, email=?, password=?, sign_img=?, active=?, updated_at = now() WHERE user_id=?";
     connection.query(
       sql, 
       [username, email, password, active,sign_img, user_id], 

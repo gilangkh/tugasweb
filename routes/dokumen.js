@@ -25,13 +25,14 @@ router.post('/', async (req, res, next) => {
   // let connection = db.connection;
   
   //2. Ambil data yang akan ditambahkan
-
-  let name = req.body.email;
+  let dokument_id = req.body.dokument_id;
+  let name = req.body.name;
   let filename = req.body.filename;
   let description = req.body.description
 
   //3. Tambahkan data ke dalam database
   await Dokument.create({
+    dokument_id : dokument_id,
     name : name,
     filename : filename,
     description : description,
@@ -49,7 +50,7 @@ router.post('/', async (req, res, next) => {
   });
   
   /* EDIT USERS */
-  router.post('/:id/edit', (req, res, next) => {
+  router.post('/:dokument_id/edit', (req, res, next) => {
     //1. Koneksi ke databaes
     let connection = db.connection;
     
@@ -57,12 +58,13 @@ router.post('/', async (req, res, next) => {
     let dokument_id = req.params.dokument_id;
     
     //3. Ambil data update
+    
     let name = req.body.name;
     let filename = req.body.filename;
     let description = req.body.description;
     
     //4. Update data di database
-    let sql = "UPDATE users SET name=?, filename=?, description=?, updated_at = now() WHERE dokument_id=?";
+    let sql = "UPDATE dokuments SET name=?, filename=?, description=?, updated_at = now() WHERE dokument_id=?";
     connection.query(
       sql, 
       [name, filename, description, dokument_id], 
@@ -78,7 +80,7 @@ router.post('/', async (req, res, next) => {
     });
     
     /* DELETE USERS */
-    router.post('/:id/delete', (req, res, next) => {
+    router.post('/:dokument_id/delete', (req, res, next) => {
       //1. Koneksi ke database
       let connection = db.connection;
       
@@ -86,7 +88,7 @@ router.post('/', async (req, res, next) => {
       let dokument_id = req.params.dokument_id;
       
       //3. Hapus data dari database
-      let sql = 'DELETE FROM users WHERE id=?';
+      let sql = 'DELETE FROM dokuments WHERE dokument_id=?';
       connection.query(sql, [dokument_id], (err, rows, fields) => {
         if(err) throw err;
         
