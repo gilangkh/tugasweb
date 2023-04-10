@@ -10,7 +10,7 @@ router.get('/', (req, res, next) => {
   //Koneksi ke database
   let connection = db.connection;
   
-  let sql = "SELECT id, username, email, active FROM users";
+  let sql = "SELECT user_id, username, email, active FROM users";
   connection.query(sql, (err, rows, fields) => {
     if(err) throw err;
     
@@ -60,17 +60,17 @@ router.post('/', async (req, res, next) => {
     let user_id = req.params.user_id;
     
     //3. Ambil data update
-    let name = req.body.username;
+    let username = req.body.username;
     let email = req.body.email;
     let password = req.body.password;
     let sign_img = req.body.sign_img;
     let active = req.body.active;
     
     //4. Update data di database
-    let sql = "UPDATE users SET name=?, email=?, password=?, avatar=?, active=?, updated_at = now() WHERE id=?";
+    let sql = "UPDATE users SET username=?, email=?, password=?, avatar=?, active=?, updated_at = now() WHERE user_id=?";
     connection.query(
       sql, 
-      [name, email, password, active,sign_img, user_id], 
+      [username, email, password, active,sign_img, user_id], 
       (err, rows, fields) => {
         if(err) throw err;
         
@@ -93,7 +93,7 @@ router.post('/', async (req, res, next) => {
       
       //3. Hapus data dari database
       let sql = 'DELETE FROM users WHERE id=?';
-      connection.query(sql, [id], (err, rows, fields) => {
+      connection.query(sql, [user_id], (err, rows, fields) => {
         if(err) throw err;
         
         let response = {
@@ -104,6 +104,6 @@ router.post('/', async (req, res, next) => {
         res.json(response);
       });
     });
-    
+   
     module.exports = router;
     
