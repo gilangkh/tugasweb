@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../modules/db');
-var User = require('../models/dokuments');
+var Dokument = require('../models/dokuments');
 const { response } = require('express');
 
 /* GET users listing. */
@@ -31,7 +31,7 @@ router.post('/', async (req, res, next) => {
   let description = req.body.description
 
   //3. Tambahkan data ke dalam database
-  await User.create({
+  await Dokument.create({
     name : name,
     filename : filename,
     description : description,
@@ -54,7 +54,7 @@ router.post('/', async (req, res, next) => {
     let connection = db.connection;
     
     //2. Ambil id data yang akan diedit
-    let user_id = req.params.user_id;
+    let dokument_id = req.params.dokument_id;
     
     //3. Ambil data update
     let name = req.body.name;
@@ -65,7 +65,7 @@ router.post('/', async (req, res, next) => {
     let sql = "UPDATE users SET name=?, filename=?, description=?, updated_at = now() WHERE dokument_id=?";
     connection.query(
       sql, 
-      [username, email, password, active,sign_img, user_id], 
+      [name, filename, description, dokument_id], 
       (err, rows, fields) => {
         if(err) throw err;
         
@@ -83,11 +83,11 @@ router.post('/', async (req, res, next) => {
       let connection = db.connection;
       
       //2. Ambil ID data yang akan dihapus (M DZAKY)
-      let user_id = req.params.user_id;
+      let dokument_id = req.params.dokument_id;
       
       //3. Hapus data dari database
       let sql = 'DELETE FROM users WHERE id=?';
-      connection.query(sql, [user_id], (err, rows, fields) => {
+      connection.query(sql, [dokument_id], (err, rows, fields) => {
         if(err) throw err;
         
         let response = {

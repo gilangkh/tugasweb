@@ -1,7 +1,7 @@
 const {Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('mysql://root@localhost/pwebb');
 
-const dokument = sequelize.define('dokument', 
+const Dokument = sequelize.define('Dokument', 
 {
     dokument_id: {
         type:DataTypes.STRING,
@@ -30,10 +30,10 @@ const dokument = sequelize.define('dokument',
     }
 }, 
 {
-    tableName: 'dokuemnts',
+    tableName: 'documents',
     timestamps: true,
     updatedAt: 'updated_at',
     createdAt: 'created_at'
 });
 
-module.exports = dokument
+module.exports = Dokument;
