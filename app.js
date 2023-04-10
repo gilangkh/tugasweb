@@ -2,6 +2,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+// =====
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const { Sequelize } = require('sequelize');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../modules/db');
-var User = require('../models/users');
+var User = require('../models/dokuments');
 const { response } = require('express');
 
 /* GET users listing. */
@@ -47,13 +47,12 @@ router.post('/', async (req, res, next) => {
     res.json(response);
   }).catch((err) => {
     console.log(err);
-
   })
 
   });
   
   /* EDIT USERS */
-  router.post('/:user_id/edit', (req, res, next) => {
+  router.post('/:id/edit', (req, res, next) => {
     //1. Koneksi ke databaes
     let connection = db.connection;
     
@@ -84,7 +83,7 @@ router.post('/', async (req, res, next) => {
     });
     
     /* DELETE USERS */
-    router.post('/:user_id/delete', (req, res, next) => {
+    router.post('/:id/delete', (req, res, next) => {
       //1. Koneksi ke database
       let connection = db.connection;
       
@@ -92,7 +91,7 @@ router.post('/', async (req, res, next) => {
       let user_id = req.params.user_id;
       
       //3. Hapus data dari database
-      let sql = 'DELETE FROM users WHERE user_id=?';
+      let sql = 'DELETE FROM users WHERE id=?';
       connection.query(sql, [user_id], (err, rows, fields) => {
         if(err) throw err;
         
