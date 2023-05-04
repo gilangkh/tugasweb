@@ -4,10 +4,9 @@ var db = require('../modules/db');
 var Dokument = require('../models/dokuments');
 const { response } = require('express');
 
-/* GET users listing. */
+//READ
 router.get('/', (req, res, next) => {
   
-  //Koneksi ke database
   let connection = db.connection;
   
   let sql = "SELECT dokument_id, name, filename, description FROM dokuments";
@@ -19,18 +18,14 @@ router.get('/', (req, res, next) => {
   
 });
 
-/* TAMBAH USERS */
+//CREATE
 router.post('/', async (req, res, next) => {
-  //1. Buat koneksi ke database
-  // let connection = db.connection;
-  
-  //2. Ambil data yang akan ditambahkan
+
   let dokument_id = req.body.dokument_id;
   let name = req.body.name;
   let filename = req.body.filename;
   let description = req.body.description
 
-  //3. Tambahkan data ke dalam database
   await Dokument.create({
     dokument_id : dokument_id,
     name : name,
@@ -49,21 +44,20 @@ router.post('/', async (req, res, next) => {
 
   });
   
-  /* EDIT USERS */
+ //EDIT
   router.post('/:dokument_id/edit', (req, res, next) => {
-    //1. Koneksi ke databaes
+   
     let connection = db.connection;
     
-    //2. Ambil id data yang akan diedit
+
     let dokument_id = req.params.dokument_id;
     
-    //3. Ambil data update
+
     
     let name = req.body.name;
     let filename = req.body.filename;
     let description = req.body.description;
-    
-    //4. Update data di database
+
     let sql = "UPDATE dokuments SET name=?, filename=?, description=?, updated_at = now() WHERE dokument_id=?";
     connection.query(
       sql, 
@@ -79,15 +73,13 @@ router.post('/', async (req, res, next) => {
       });
     });
     
-    /* DELETE USERS */
+    //DELETE
     router.post('/:dokument_id/delete', (req, res, next) => {
-      //1. Koneksi ke database
+      
       let connection = db.connection;
       
-      //2. Ambil ID data yang akan dihapus (M DZAKY)
       let dokument_id = req.params.dokument_id;
       
-      //3. Hapus data dari database
       let sql = 'DELETE FROM dokuments WHERE dokument_id=?';
       connection.query(sql, [dokument_id], (err, rows, fields) => {
         if(err) throw err;
