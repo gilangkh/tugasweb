@@ -16,39 +16,43 @@ router.get('/', (req, res, next) => {
     if(err) throw err;
     
     res.json(rows);
+    return res.json(response);
   });
   
 });
 
 router.post('/', async (req, res, next) => {
-  
-  let user_id = req.body.user_id;
-  let username = req.body.username;
-  let email = req.body.email;
-  let password = req.body.password;
-  let active = req.body.active;
-  let sign_img = req.body.sign_img;
-  
-  await User.create({
-    user_id : user_id,
-    username: username,
-    email: email,
-    password: password,
-    active: active,
-    sign_img: sign_img
-  
-  }).then((res) => {
+  try {
+    let user_id = req.body.user_id;
+    let username = req.body.username;
+    let email = req.body.email;
+    let password = req.body.password;
+    let active = req.body.active;
+    let sign_img = req.body.sign_img;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      user_id: user_id,
+      username: username,
+      email: email,
+      password: hashedPassword,
+      active: active,
+      sign_img: sign_img
+    });
+
     let response = {
       message: "Data berhasil ditambahkan",
+      data: newUser
     };
-    
-    res.json(response);
-  }).catch((err) => {
+
+    res.status(201).json(response);
+  } catch (err) {
     console.log(err);
+    res.status(500).json({ message: 'Gagal menambahkan data ke database.' });
+  }
+});
 
-  })
-
-  });
   
   router.post('/:user_id/edit', (req, res, next) => {
 
@@ -100,20 +104,26 @@ router.post('/', async (req, res, next) => {
     router.post('/login', async (req, res) => {
       const { email, password } = req.body;
     
-      const user = await User.findOne({ where: { email } });
-      if (!user) {
-        return res.status(401).json({ message: 'Email atau password salah' });
+      try {
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+          return res.status(401).json({ message: 'Email atau password salah' });
+        }
+    
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+          return res.status(401).json({ message: 'Email atau password salah' });
+        }
+    
+        const token = jwt.sign({ userId: user.user_id }, 'rahasia');
+    
+        res.json({ token });
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Terjadi kesalahan saat proses login' });
       }
-    
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Email atau password salah' });
-      }
-    
-      const token = jwt.sign({ userId: user.user_id }, 'rahasia');
-    
-      res.json({ token });
     });
+    
    
    
 
@@ -128,13 +138,29 @@ app.post('/login', async (req, res) => {
 
   try {
     // Call login function to authenticate user
-    const token = await login(req, res);
+    const token = await login(req, res, password);
     return res.status(200).json({ token });
-  } catch (error) {
+    } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
-  }
-});
+    }
+    });
+    
+    async function login(req, res, password) {
+    const user = await User.findOne({ where: { email: req.body.email } });
+    if (!user) {
+    return res.status(401).json({ message: 'Email  salah' });
+    }
+    
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+    return res.status(401).json({ message: ' password salah' });
+    }
+    
+    const token = jwt.sign({ userId: user.user_id }, 'rahasia');
+    return token;
+    
+}
 
 // Middleware for JWT authentication
 const authenticateJWT = (req, res, next) => {
