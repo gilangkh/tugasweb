@@ -13,7 +13,7 @@ const bcrypt = require('bcrypt');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dokumenRouter = require('./routes/dokumen')
-
+var signatureRouter = require('./routes/signature')
 var app = express();
 
 app.use(logger('dev'));
@@ -26,5 +26,6 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/dokumen', dokumenRouter);
+app.use('/signature',signatureRouter)
 
 module.exports = app;

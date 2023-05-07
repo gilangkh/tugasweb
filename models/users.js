@@ -2,6 +2,7 @@ const {Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
 const jwt = require('jsonwebtoken');
+const Signature = require('../models/signature.js')
 const User = sequelize.define('User', 
 {
     user_id: {
@@ -98,5 +99,5 @@ User.beforeCreate(async (user) => {
       return res.status(500).json({ message: 'Internal server error' });
     }
   };
-  
+  User.hasMany(Signature, { foreignKey: 'user_id' });
   module.exports = { User, login };
