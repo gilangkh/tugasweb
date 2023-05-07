@@ -6,6 +6,8 @@ var {User,login} = require('../models/users');
 const { response } = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const app = express();
+
 
 router.get('/', (req, res, next) => {
   
@@ -15,8 +17,8 @@ router.get('/', (req, res, next) => {
   connection.query(sql, (err, rows, fields) => {
     if(err) throw err;
     
-    res.json(rows);
-    return res.json(response);
+    return res.json(rows);
+
   });
   
 });
@@ -77,7 +79,7 @@ router.post('/', async (req, res, next) => {
           message: "Data berhasil diupdate",
           affectedRows: rows.affectedRows
         }      
-        res.json(response);
+        return res.json(response);
       });
     });
     
@@ -97,90 +99,71 @@ router.post('/', async (req, res, next) => {
           affectedRows: rows.affectedRows
         };
         
-        res.json(response);
+        return res.json(response);
       });
     });
 
     router.post('/login', async (req, res) => {
-      const { email, password } = req.body;
-    
+  
       try {
-        const user = await User.findOne({ where: { email } });
-        if (!user) {
-          return res.status(401).json({ message: 'Email atau password salah' });
-        }
-    
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-          return res.status(401).json({ message: 'Email atau password salah' });
-        }
-    
-        const token = jwt.sign({ userId: user.user_id }, 'rahasia');
-    
-        res.json({ token });
+        const{email,password}= req.body;
+        // Panggil fungsi login untuk mengautentikasi pengguna
+        const token = await login(req, res,email,password);
       } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Terjadi kesalahan saat proses login' });
+        console.error(error);
+        return res.status(500).json({ message: 'Kesalahan server internal' });
       }
     });
     
-   
-   
-
-const app = express();
+    async function login(req, res,email, password) {
+      try {
+        const user = await User.findOne({ where: { email:email } });
+    
+        if (!user) {
+          return res.status(401).json({ message: 'Email salah' });
+        }
+    
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+        if (!isPasswordValid) {
+          return res.status(401).json({ message: 'Password salah' });
+        }
+    
+        const token = jwt.sign({ userId: user.user_id }, 'rahasia');
+        return res.status(200).json({ token });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Kesalahan server internal' });
+      }
+    }
+    
+    // Middleware untuk otentikasi JWT
+    const authenticateJWT = (req, res, next) => {
+      const token = req.header('Authorization');
+    
+      if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+    
+      jwt.verify(token, 'yourSecretKey', (err, user) => {
+        if (err) {
+          return res.status(403).json({ message: 'Forbidden' });
+        }
+        req.user = user;
+        next();
+      });
+    };
+    
+  
 
 // Middleware for parsing request body
-app.use(bodyParser.json());
+router.use(bodyParser.json());
 
-// Login route
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+// Middleware untuk otentikasi JWT
 
-  try {
-    // Call login function to authenticate user
-    const token = await login(req, res, password);
-    return res.status(200).json({ token });
-    } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
-    }
-    });
-    
-    async function login(req, res, password) {
-    const user = await User.findOne({ where: { email: req.body.email } });
-    if (!user) {
-    return res.status(401).json({ message: 'Email  salah' });
-    }
-    
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-    return res.status(401).json({ message: ' password salah' });
-    }
-    
-    const token = jwt.sign({ userId: user.user_id }, 'rahasia');
-    return token;
-    
-}
-
-// Middleware for JWT authentication
-const authenticateJWT = (req, res, next) => {
-  const token = req.header('Authorization');
-
-  if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  jwt.verify(token, 'yourSecretKey', (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: 'Forbidden' });
-    }
-    req.user = user;
-    next();
-  });
-};
 
 // Protected route that requires authentication
-app.get('/profile', authenticateJWT, async (req, res) => {
+router.get('/profile', authenticateJWT, async (req, res) => {
   try {
     // Access user information from req.user
     const { user_id, username, email } = req.user;
@@ -192,7 +175,6 @@ app.get('/profile', authenticateJWT, async (req, res) => {
 });
 
 // Start server
-
 
     module.exports = router;
     
