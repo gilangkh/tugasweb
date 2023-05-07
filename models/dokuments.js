@@ -1,6 +1,6 @@
 const {Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
-const {Signature} = require('./signature.js')
+const Signature = require('./signature.js')
 
 const Dokument = sequelize.define('Dokument', 
 {
