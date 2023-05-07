@@ -1,7 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
-const User = require('../models/users')
-const Dokument = require('../models/dokuments')
+const {User} = require('./users')
+const Dokument = require('./dokuments');
+const Relation = require('./relation');
+const { FOREIGNKEYS } = require('sequelize/types/query-types');
 
 const Signature = sequelize.define('Signature', {
   user_id: {
@@ -51,10 +53,19 @@ const Signature = sequelize.define('Signature', {
     updatedAt: 'updated_at',
     createdAt: 'created_at'
 });
+sequelize.addConstraint('Signature',{
+    fields:['user_id','document_id'],
+    type: 'primary key',
+    name: 'signature_pk'
+})
 
 // Definisikan hubungan antara model User, Document, dan Signature
-User.hasMany(Signature, { foreignKey: 'user_id' });
-Dokument.hasMany(Signature, { foreignKey: 'document_id' });
+Signature.belongsTo(User, 
+    {FOREIGNKEYS : 'user_id'
+});
+Signature.belongsTo(Dokument, 
+    {FOREIGNKEYS : 'document_id',
+});
 // Sinkronisasi model dengan database
 
 module.exports = { Signature};

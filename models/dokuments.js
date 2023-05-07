@@ -1,6 +1,6 @@
 const {Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
-const {Signature} = require('../models/signature.js')
+const {Signature} = require('./signature.js')
 
 const Dokument = sequelize.define('Dokument', 
 {
@@ -36,5 +36,5 @@ const Dokument = sequelize.define('Dokument',
     updatedAt: 'updated_at',
     createdAt: 'created_at'
 });
-Dokument.hasMany(Signature, { foreignKey: 'document_id' });
+
 module.exports = Dokument;
