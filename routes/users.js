@@ -7,9 +7,11 @@ const { response } = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const app = express();
+app.set('view engine','ejs');
 
 
-router.get('/', (req, res, next) => {
+
+router.get('/',  (req, res, next) => {
   
   let connection = db.connection;
   
@@ -17,13 +19,23 @@ router.get('/', (req, res, next) => {
   connection.query(sql, (err, rows, fields) => {
     if(err) throw err;
     
-    return res.json(rows);
+    res.render("userIndex",{
+      data:rows,
+      title:"User|List",
+      layout:'./layout/main-layout'
+    })
 
   });
+
   
 });
-
-router.post('/', async (req, res, next) => {
+router.get('/create',(req,res)=>{
+    res.render('register',{
+      title:"User | Register",
+      layout:false
+    })
+});
+router.post('/create', async (req, res, next) => {
   try {
     let user_id = req.body.user_id;
     let username = req.body.username;
@@ -103,12 +115,24 @@ router.post('/', async (req, res, next) => {
       });
     });
 
+    router.get('/login', (req, res) => {
+      res.render('login',{
+        title:"login",
+        layout:false
+        
+      }); 
+
+    });
     router.post('/login', async (req, res) => {
   
       try {
+
         const{email,password}= req.body;
         // Panggil fungsi login untuk mengautentikasi pengguna
+        
         const token = await login(req, res,email,password);
+         
+        res.redirect('../dokumen/'); 
       } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Kesalahan server internal' });

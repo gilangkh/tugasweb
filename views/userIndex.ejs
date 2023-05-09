@@ -1,0 +1,33 @@
+<div class="col-md-10">
+    <section class="content">
+        <h1>User List</h1>
+
+        <table class="table table-hover">
+          <tr>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+          <% data.forEach(function(user) { %>
+            <tr>
+              <td><%= user.user_id %></td>
+              <td><%= user.username %></td>
+              <td><%= user.email %></td>
+              <td><%= user.active %></td>
+              <td>
+                <a href=""  type="button" class="btn btn-primary">Edit</a>
+                <form action="" >
+                    <button  type="button" class="btn btn-danger" >delete </button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </table>
+    </section>
+   
+
+</div>
+</div>
+</div>

@@ -2,7 +2,7 @@ const {Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
 const jwt = require('jsonwebtoken');
-const Signature = require('./signature.js')
+
 const User = sequelize.define('User', 
 {
     user_id: {

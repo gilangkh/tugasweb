@@ -4,16 +4,22 @@ var db = require('../modules/db');
 var Dokument = require('../models/dokuments');
 const { response } = require('express');
 
+
+
 //READ
 router.get('/', (req, res, next) => {
   
   let connection = db.connection;
   
-  let sql = "SELECT dokument_id, name, filename, description FROM dokuments";
+  let sql = "SELECT document_id, name, filename, description FROM documents";
   connection.query(sql, (err, rows, fields) => {
     if(err) throw err;
-    
-    res.json(rows);
+    res.render("documentIndex",{
+      data:rows,
+      title:"Dokumen | List",
+      layout:'./layout/main-layout'
+    })
+    return res.json(rows);
   });
   
 });
@@ -21,13 +27,13 @@ router.get('/', (req, res, next) => {
 //CREATE
 router.post('/', async (req, res, next) => {
 
-  let dokument_id = req.body.dokument_id;
+  let document_id = req.body.document_id;
   let name = req.body.name;
   let filename = req.body.filename;
   let description = req.body.description
 
   await Dokument.create({
-    dokument_id : dokument_id,
+    document_id : document_id,
     name : name,
     filename : filename,
     description : description,
@@ -37,7 +43,7 @@ router.post('/', async (req, res, next) => {
       message: "Data berhasil ditambahkan",
     };
     
-    res.json(response);
+    return res.json(response);
   }).catch((err) => {
     console.log(err);
   })
@@ -45,7 +51,7 @@ router.post('/', async (req, res, next) => {
   });
   
  //EDIT
-  router.post('/:dokument_id/edit', (req, res, next) => {
+  router.post('/:document_id/edit', (req, res, next) => {
    
     let connection = db.connection;
     
@@ -69,7 +75,7 @@ router.post('/', async (req, res, next) => {
           message: "Data berhasil diupdate",
           affectedRows: rows.affectedRows
         }      
-        res.json(response);
+        return res.json(response);
       });
     });
     
@@ -89,7 +95,7 @@ router.post('/', async (req, res, next) => {
           affectedRows: rows.affectedRows
         };
         
-        res.json(response);
+        return res.json(response);
       });
     });
    
