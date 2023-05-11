@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const app = express();
 app.set('view engine','ejs');
-
+router.use(bodyParser.json());
 
 
 router.get('/',  (req, res, next) => {
@@ -60,10 +60,10 @@ router.post('/create', async (req, res, next) => {
       data: newUser
     };
 
-    res.status(201).json(response);
+    return res.status(201).json(response);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'Gagal menambahkan data ke database.' });
+    return res.status(500).json({ message: 'Gagal menambahkan data ke database.' });
   }
 });
 
@@ -115,6 +115,26 @@ router.post('/create', async (req, res, next) => {
       });
     });
 
+    const authenticateJWT = (req, res, next) => {
+      const token = req.header('Authorization');
+    
+      if (!token) {
+    
+        return res.redirect('./login')
+      }
+    
+      jwt.verify(token, 'yourSecretKey', (err, user) => {
+        if (err) {
+          return res.status(403).json({ message: 'Forbidden' });
+        }
+        req.user = user;
+        res.redirect('./login')
+        next();
+        
+      });
+      
+    };
+
     router.get('/login', (req, res) => {
       res.render('login',{
         title:"login",
@@ -123,80 +143,50 @@ router.post('/create', async (req, res, next) => {
       }); 
 
     });
-    router.post('/login', async (req, res) => {
-  
+    router.post('/login', async (req, res,next) => {
       try {
+        const { email, password } = req.body;
+    
+        if (!email) {
+          return res.status(400).json({ message: 'Email is required' });
+        }
+    
+        if (!password) {
+          return res.status(400).json({ message: 'Password is required' });
+        }
 
-        const{email,password}= req.body;
-        // Panggil fungsi login untuk mengautentikasi pengguna
-        
-        const token = await login(req, res,email,password);
-         
-        res.redirect('../dokumen/'); 
+    
+        const token = await login(req, res, email, password);
+     
+       
       } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: 'Kesalahan server internal' });
+        return res.status(500).json({ message: 'Jangan Error PLEASE' });
       }
     });
     
-    async function login(req, res,email, password) {
-      try {
-        const user = await User.findOne({ where: { email:email } });
-    
-        if (!user) {
-          return res.status(401).json({ message: 'Email salah' });
-        }
-    
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-    
-        if (!isPasswordValid) {
-          return res.status(401).json({ message: 'Password salah' });
-        }
-    
-        const token = jwt.sign({ userId: user.user_id }, 'rahasia');
-        return res.status(200).json({ token });
-      } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Kesalahan server internal' });
-      }
-    }
     
     // Middleware untuk otentikasi JWT
-    const authenticateJWT = (req, res, next) => {
-      const token = req.header('Authorization');
     
-      if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
-    
-      jwt.verify(token, 'yourSecretKey', (err, user) => {
-        if (err) {
-          return res.status(403).json({ message: 'Forbidden' });
-        }
-        req.user = user;
-        next();
-      });
-    };
-    
-  
-
-// Middleware for parsing request body
-router.use(bodyParser.json());
-
-// Middleware untuk otentikasi JWT
-
-
-// Protected route that requires authentication
-router.get('/profile', authenticateJWT, async (req, res) => {
+     
+router.get('/profil', async (req, res) => {
   try {
     // Access user information from req.user
     const { user_id, username, email } = req.user;
-    return res.status(200).json({ user_id, username, email });
+    res.render('profile', {
+      title: username,
+      layout: './layout/main-layout',
+      user_id,
+      username,
+      email
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
+// Protected route that requires authentication
+
 
 // Start server
 

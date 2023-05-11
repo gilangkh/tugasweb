@@ -72,7 +72,7 @@ User.beforeCreate(async (user) => {
   // Login endpoint
   const login = async (req, res) => {
   
-  
+
     try {
       const { email, password } = req.body;
       // Find user by email
@@ -91,12 +91,12 @@ User.beforeCreate(async (user) => {
   
       // Generate JWT token
       const token = generateToken(user);
-  
+
       // Send token in response
       return res.status(200).json({ token });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Error Trus' });
     }
   };
-  module.exports = { User, login };
+  module.exports =  {User,login}
