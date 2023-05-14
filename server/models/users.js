@@ -76,7 +76,8 @@ User.beforeCreate(async (user) => {
     try {
       const { email, password } = req.body;
       // Find user by email
-      const user = await User.findOne({ where: { email:email } });
+      const user = await User.findOne({
+         where: { email:email } });
   
       // Check if user exists
       if (!user) {

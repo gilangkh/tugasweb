@@ -1,11 +1,11 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('mysql://root@localhost/dokumen');
+const Sequelize = new Sequelize('mysql://root@localhost/dokumen');
 const User = require('./users')
 const Dokument = require('./dokuments');
 const Relation = require('./relation');
 
 
-const Signature = sequelize.define('Signature', {
+const Signature = Sequelize.define('Signature', {
   user_id: {
     type: DataTypes.STRING(255),
     primaryKey: true,
