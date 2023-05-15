@@ -1,10 +1,8 @@
 .body {
 
-  position: relative;
   width: 100%;
   height: 982px;
-  margin:100px ;
-  background: linear-gradient(180deg, #FFFFFF 0%, #2996D3 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #cae1ee 100%);
 
 }
 
@@ -107,7 +105,7 @@ color: white;
   color:white;
   border-right: solid;
   border-color: rgb(53, 50, 107);
-  background-color: #2e2259;
+  background-color: #403a56;
 
 
 }
