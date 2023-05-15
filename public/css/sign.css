@@ -1,0 +1,135 @@
+body {
+position: relative;
+  width: 1512px;
+  height: 982px;
+
+  background: #ffffff;
+}
+
+#send {
+
+  width: 302px;
+  height: 29px;
+
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+
+  color: #184240;
+}
+
+#select {
+  /* Select documents to be signed */
+
+
+  width: 385px;
+  height: 29px;
+
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 29px;
+
+  color: #184240;
+}
+
+#kotak {
+  /* Rectangle 25 */
+
+
+  width: 1138px;
+  height: 327px;
+
+  mix-blend-mode: normal;
+  border: 3px dashed #d9d9d9;
+  border-radius: 10px;
+}
+
+#line {
+
+  width: 1138px;
+  height: 0px;
+
+  border: 2px solid #d9d9d9;
+  transform: rotate(0.05deg);
+}
+
+#butt {
+
+  width: 140px;
+  height: 46px;
+
+  border-radius: 22px;
+  background: #2996d3;
+}
+#next {
+
+  width: 49px;
+  height: 24px;
+
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #ffffff;
+}
+
+#up {
+
+  width: 136px;
+  height: 45px;
+
+  background: rgba(217, 217, 217, 0.36);
+  border-radius: 5px;
+}
+
+.arrow-up {
+
+  transform: rotate(-90deg);
+}
+
+#add {
+
+  width: 199px;
+  height: 45px;
+
+  background: rgba(217, 217, 217, 0.36);
+  border-radius: 5px;
+}
+
+#t1 {
+
+  width: 74px;
+  height: 24px;
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #184240;
+}
+
+#t2 {
+
+  width: 145px;
+  height: 24px;
+
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #184240;
+}

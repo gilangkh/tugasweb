@@ -1,37 +1,76 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-// =====
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const { Sequelize } = require('sequelize');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+/** @format */
 
+const express = require("express");
+const axios = require("axios");
+const bodyParser = require("body-parser");
+const app = express();
+const port = 8000;
+const mysql = require("mysql2");
+const expressLayouts = require("express-ejs-layouts");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var dokumenRouter = require('./routes/dokumen')
-var signatureRouter = require('./routes/signature')
-const expressLayouts = require('express-ejs-layouts');
-var app = express();
-app.set('view engine','ejs');
-
-
-app.use(logger('dev'));
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json());
+app.set("view engine", "ejs");
 app.use(expressLayouts);
-// app.use(express.static("public"));
-app.use('/css', express.static(path.resolve(__dirname, "public/css")));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/dokumen', dokumenRouter);
-app.use('/signature',signatureRouter)
+//** authenticate */
 
-module.exports = app;
+app.get("/login", (req, res) => {
+  res.render("login", {
+    title: "login",
+    layout: false,
+  });
+});
+
+app.get("/profile", (req, res) => {
+  res.render("profile", {
+    title: "profile",
+    layout: "./layout/main-layout",
+  });
+});
+
+app.get("/register", (req, res) => {
+  res.render("register", {
+    title: "Register",
+    layout: false,
+  });
+});
+
+app.get("/dokumen", (req, res) => {
+  res.render("document", {
+    title: "Dokumen",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/index", (req, res) => {
+  res.render("nav", {
+    title: "Home",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/sendsign", (req, res) => {
+  res.render("sendsign", {
+    title: "SendSign",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/sign", (req, res) => {
+  res.render("Sign", {
+    title: "Sign",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/tview", (req, res) => {
+  res.render("template-view", {
+    title: "SendSign",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/template", (req, res) => {
+  res.render("template", {
+    title: "template    ",
+    layout: "./layout/main-layout",
+  });
+});
+app.listen(port, () => console.info("port yang berjalan 8000"));

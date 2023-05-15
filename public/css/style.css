@@ -1,7 +1,7 @@
-h1{
+.h1{
   color: hsl(218, 78%, 51%)
 }
-span{
+.span{
   color: hsl(218, 81%, 75%)
 }
 
@@ -56,9 +56,7 @@ span{
 #anura{
   z-index: 10
 }
-body{
-  background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-}
+
 .emp-profile{
   padding: 3%;
   margin-top: 3%;
@@ -151,4 +149,6 @@ body{
   font-weight: 600;
   color: white;
 } 
+
+
 

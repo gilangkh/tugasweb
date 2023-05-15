@@ -1,0 +1,78 @@
+
+.heading2{
+  color:grey;
+}
+#inputname {
+
+  width: 715px;
+  height: 37px;
+
+
+  mix-blend-mode: normal;
+  border: 2px solid #d9d9d9;
+  border-radius: 2px;
+}
+
+#optional {
+
+  width: 140px;
+  height: 18px;
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+
+  color: #184240;
+}
+
+#inputopti {
+
+  width: 715px;
+  height: 134px;
+
+  mix-blend-mode: normal;
+  border: 2px solid #d9d9d9;
+  border-radius: 2px;
+}
+
+#up {
+
+  width: 117px;
+  height: 24px;
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #184240;
+}
+
+#fil {
+
+  width: 102px;
+  height: 18px;
+
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+
+  color: #184240;
+}
+
+#inputfi {
+
+  width: 715px;
+  height: 174px;
+
+
+  mix-blend-mode: normal;
+  border: 2px solid #d9d9d9;
+  border-radius: 2px;
+}
