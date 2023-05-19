@@ -4,7 +4,13 @@
             <form method="post">
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="../public/images/Screenshot 2023-04-28 112527.png" alt="">
+                        <div class="profile-img">
+                            <img src="/images/Screenshot 2023-04-28 112527.png" alt=""/>
+                            <div class="file btn btn-lg btn-primary">
+                                Change Photo
+                                <input type="file" name="file"/>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="profile-head">
@@ -21,7 +27,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"/>
+                        <a href="editprofile" class="btn btn-secondary" name="btnAddMore" value="Edit Profile">Edit Profile</a>
                     </div>
                 </div>
                 <div class="row">
@@ -37,9 +43,7 @@
                                             <div class="col-md-6">
                                                 <label>User Id</label>
                                             </div>
-                                            <div class="col-md-6">
-                                                <p>..</p>
-                                            </div>
+
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">

@@ -7,9 +7,10 @@ const { name } = require("ejs");
 const controller = {};
 
 const getAllUser = async (req, res) => {
+
   try {
-    const users = await users.findAll();
-    res.json(users);
+    const users = await User.findAll();
+    res.status(200).json(users);
   } catch (err) {
     console.log(err);
   }

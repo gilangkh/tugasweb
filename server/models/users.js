@@ -1,8 +1,6 @@
 const {Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
-const jwt = require('jsonwebtoken');
-
 const User = sequelize.define('User', 
 {
     user_id: {
@@ -46,58 +44,4 @@ const User = sequelize.define('User',
     createdAt: 'created_at'
 });
 
-User.beforeCreate(async (user) => {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(user.password, saltRounds);
-    user.password = hashedPassword;
-  });
-
-  const generateToken = (user) => {
-    const secretKey = 'rahasia'; // Replace with your own secret key
-    const expiresIn = '1h'; // Token expiration time
-  
-    const token = jwt.sign(
-      {
-        user_id: user.user_id,
-        email: user.email,
-        password: user.password
-      },
-      secretKey,
-      { expiresIn }
-    );
-  
-    return token;
-  };
-  
-  // Login endpoint
-  const login = async (req, res) => {
-  
-
-    try {
-      const { email, password } = req.body;
-      // Find user by email
-      const user = await User.findOne({
-         where: { email:email } });
-  
-      // Check if user exists
-      if (!user) {
-        return res.status(401).json({ message: 'Invalid email ' });
-      }
-  
-      // Compare password
-      const passwordMatch = await bcrypt.compare(password, user.password);
-      if (!passwordMatch) {
-   
-      }
-  
-      // Generate JWT token
-      const token = generateToken(user);
-
-      // Send token in response
-      return res.status(200).json({ token });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Error Trus' });
-    }
-  };
-  module.exports =  {User,login}
+  module.exports =  User

@@ -73,4 +73,23 @@ app.get("/template", (req, res) => {
     layout: "./layout/main-layout",
   });
 });
-app.listen(port, () => console.info("port yang berjalan 8000"));
+app.get("/editprofile",(req, res) => {
+    res.render("editProfile", {
+      title: "Edit Profile",
+      layout: "./layout/main-layout",
+    });
+  });
+
+  app.get("/password",(req, res) => {
+    res.render("editpassword", {
+      title: "Edit Password",
+      layout: "./layout/main-layout",
+    });
+  });
+  app.get("/signers",(req, res) => {
+    res.render("signers", {
+      title: "Signer  ",
+      layout: "./layout/main-layout",
+    });
+  });
+app.listen(port, () => console.info("Front-End yang berjalan di port 8000"));
