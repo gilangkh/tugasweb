@@ -15,6 +15,26 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 
 //** authenticate */
+app.get("/users", (req, res) => {
+
+  var url= 'http://localhost:3000/user/index'
+  axios
+  .get(url)
+  .then(function(response){
+    res.render("userIndex", {
+      title: "daftar User",
+      layout: "./layout/main-layout",
+      data : response.data
+
+    });
+  })
+  .catch(function(error){
+    console.log(error)
+  })
+
+
+ 
+});
 
 app.get("/login", (req, res) => {
   res.render("login", {
@@ -73,23 +93,23 @@ app.get("/template", (req, res) => {
     layout: "./layout/main-layout",
   });
 });
-app.get("/editprofile",(req, res) => {
-    res.render("editProfile", {
-      title: "Edit Profile",
-      layout: "./layout/main-layout",
-    });
+app.get("/editprofile", (req, res) => {
+  res.render("editProfile", {
+    title: "Edit Profile",
+    layout: "./layout/main-layout",
   });
+});
 
-  app.get("/password",(req, res) => {
-    res.render("editpassword", {
-      title: "Edit Password",
-      layout: "./layout/main-layout",
-    });
+app.get("/password", (req, res) => {
+  res.render("editpassword", {
+    title: "Edit Password",
+    layout: "./layout/main-layout",
   });
-  app.get("/signers",(req, res) => {
-    res.render("signers", {
-      title: "Signer  ",
-      layout: "./layout/main-layout",
-    });
+});
+app.get("/signers", (req, res) => {
+  res.render("signers", {
+    title: "Signer  ",
+    layout: "./layout/main-layout",
   });
+});
 app.listen(port, () => console.info("Front-End yang berjalan di port 8000"));
