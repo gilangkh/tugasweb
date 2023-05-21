@@ -1,2 +1,1 @@
-const Document = require('../models/dokuments')
-cont
+const Document = require('../models/dokuments');
