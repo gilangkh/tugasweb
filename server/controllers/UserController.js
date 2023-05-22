@@ -107,9 +107,31 @@
       res.status(500).json({err:"KACIAN ERROR"})
     }
   };
+  const getOneUser =  async(req,res)=>{
+    let user_id = req.params.user_id;
+    try
+    {
+      const user = await User.findOne({where:{user_id:user_id}})
+
+      if(user)
+      {
+        res.status(200).json(user)
+      }else{
+        res.status(404).json({message:"Data tidak ditemukan"})
+      }
+      
+    }catch(err){
+      console.log(err)
+      res.status(500).json({err:"KACIAN ERROR"})
+    }
+  
+
+  };
+  
   module.exports = {
     getAllUser,
     createUser,
     updateUser,
     deleteUser,
+    getOneUser
   };

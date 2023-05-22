@@ -38,7 +38,7 @@ router.post("/create", async (req, res, next) => {
     let username = req.body.username;
     let email = req.body.email;
     let password = req.body.password;
-    let active = req.body.active;
+
     let sign_img = req.body.sign_img;
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -48,7 +48,7 @@ router.post("/create", async (req, res, next) => {
       username: username,
       email: email,
       password: hashedPassword,
-      active: active,
+      active: 1,
       sign_img: sign_img,
     });
 

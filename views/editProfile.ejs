@@ -1,7 +1,6 @@
 
 
 <div class="container emp-profile">
-            <form method="post">
                 <div class="row">
                     <div class="col-md-4">
                         <img src="../public/images/Screenshot 2023-04-28 112527.png" alt="">
@@ -23,34 +22,28 @@
                 </div>
                 <div class="row">
                  
-                <form action="">
+                <form action="/user/<%= user.user_id %>/update" id="userForm" method="post">
                     <div class="col-md-12" >
                         <div class="tab-content profile-tab" id="myTabContent">
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                        <div class="row my-3">
-                                            <div class="col-md-6 ">
-                                                <label for="user_id">User Id</label>
-                                                <input class="form-control" type="tex" name="user_id" id="">
-                                            </div>
-
-                                        </div>
+                                 </div>
                                         <div class="row my-3">
                                             <div class="col-md-6">
-                                                <label for="username">Email</label>
-                                                <input class="form-control" type="text" name="username" id="name">
+                                                <label for="username">Username</label>
+                                                <input class="form-control" type="text" name="username" id="name" value="<%= user.username %>">
                                             </div>
                                         </div>
                                         <div class="row my-3">
                                             <div class="col-md-6">
-                                                <label for="emaiil">Email</label>
-                                                <input class="form-control" type="email" name="email" id="">
+                                                <label for="email">Email</label>
+                                                <input class="form-control" type="email" name="email" id="email" value="<%= user.email %>">
                                             </div>
                                         </div>
                                         <div class="row my-3">
                                              <div class="col-md-6">
                                                 <label for="password">Password</label>
                                                 <div class="d-flex justify-content-between" >
-                                                    <input class="form-control col-md-12" type="password" name="password" id="" readonly>
+                                                    <input class="form-control col-md-12" type="password" name="password" id="password" readonly value="<%= user.password %>">
                                                     <a href="/password" class="btn btn-warning col-md-2 mx-3" >edit</a>    
                                                 </div>
                                               </div>   
@@ -58,12 +51,12 @@
                                         <div class="row my-3">
                                             <div class="col-md-6">
                                                 <label for="active">active</label>
-                                                <input class="form-control" type="number" name="active" id="">
+                                                <input class="form-control" type="number" name="active" id="active"value="<%= user.active %>">
                                             </div>
                                         </div>
 
                                         <div>
-                                            <button class="btn btn-danger">Save</button>
+                                            <button type="submit" class="btn btn-danger">Save</button>
                                             <a href="/profile" class="btn btn-secondary">Kembali</a>
                                         </div>
                                 

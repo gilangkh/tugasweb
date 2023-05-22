@@ -7,7 +7,9 @@ const app = express();
 const port = 8000;
 const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
-
+const bcrypt = require("bcrypt");
+const { post } = require("./server/routes/routes");
+const User = require("./server/models/users");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -16,24 +18,19 @@ app.use(expressLayouts);
 
 //** authenticate */
 app.get("/users", (req, res) => {
-
-  var url= 'http://localhost:3000/user/index'
+  var url = "http://localhost:3000/user/index";
   axios
-  .get(url)
-  .then(function(response){
-    res.render("userIndex", {
-      title: "daftar User",
-      layout: "./layout/main-layout",
-      data : response.data
-
+    .get(url)
+    .then(function (response) {
+      res.render("userIndex", {
+        title: "daftar User",
+        layout: "./layout/main-layout",
+        data: response.data,
+      });
+    })
+    .catch(function (error) {
+      console.log(error);
     });
-  })
-  .catch(function(error){
-    console.log(error)
-  })
-
-
- 
 });
 
 app.get("/login", (req, res) => {
@@ -55,6 +52,35 @@ app.get("/register", (req, res) => {
     title: "Register",
     layout: false,
   });
+});
+
+app.post("/user/create", (req, res) => {
+  let user_id = req.body.user_id;
+  let username = req.body.username;
+  let email = req.body.email;
+  let password = req.body.password;
+  let sign_img = req.body.sign_img;
+
+  const createUser = {
+    user_id: user_id,
+    username: username,
+    email: email,
+    password: password,
+    active: 1,
+    sign_img: sign_img,
+  };
+
+  axios
+    .post("http://localhost:3000/user/create", createUser)
+    .then(function (response) {
+      console.log("Status:", response.status);
+      console.log("Data:", response.data);
+      res.status(200).redirect("/users");
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    });
 });
 
 app.get("/dokumen", (req, res) => {
@@ -93,10 +119,47 @@ app.get("/template", (req, res) => {
     layout: "./layout/main-layout",
   });
 });
-app.get("/editprofile", (req, res) => {
-  res.render("editProfile", {
-    title: "Edit Profile",
-    layout: "./layout/main-layout",
+
+// Menampilkan User
+
+app.get("/user/:user_id", (req, res) => {
+  let user_id = req.params.user_id;
+  const url = "http://localhost:3000/user/" + user_id;
+
+  axios.get(url).then(function (response) {
+    const user = response.data;
+    res.render("editProfile", {
+      title: "edit User",
+      layout: "./layout/main-layout",
+      user: user,
+    });
+  });
+});
+
+
+app.post("/user/:user_id/update", (req, res) => {
+  let user_id = req.params.user_id;
+  let username = req.body.username;
+  let email = req.body.email;
+  let password = req.body.password;
+  let active = req.body.active;
+  let sign_img = req.body.sign_img;
+
+  const url = "http://localhost:3000/user/"+ user_id+"/update";
+  const updateUser = {
+    username: username,
+    email: email,
+    password: password,
+    active: active,
+    sign_img: sign_img,
+  };
+
+  axios
+  .post(url, updateUser)
+  .then(function (response) {
+    console.log("Status:", response.status);
+      console.log("Data:", response.data);
+      res.status(200).redirect("/users");
   });
 });
 
