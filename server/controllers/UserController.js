@@ -1,7 +1,6 @@
   /** @format */
   const express = require('express')
   const User = require("../models/users");
-  const jwt = require("jsonwebtoken");
   const bcrypt = require("bcrypt");
   const bodyParser = require('body-parser');
   
@@ -42,6 +41,7 @@
         message: "data berhasil ditambahkan",
         data: createUser,
       };
+      console.log(response)
       return res.status(200).json(response);
     } catch (err) {
       console.log(err);
@@ -62,8 +62,6 @@
         newData.email =data.email,
         newData.password = hashedPassword,
         newData.active = data.active,
-        newData.sign_img = data.sign_img
-
         await newData.save();
 
         let response={

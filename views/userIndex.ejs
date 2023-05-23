@@ -18,8 +18,8 @@
               <td><%= user.active %></td>
               <td>
                 <a href="/user/<%= user.user_id %>"  type="button" class="btn btn-primary">Edit</a>
-                <form action="" >
-                    <button  type="button" class="btn btn-danger" >delete </button>
+                <form action="/user/<%= user.user_id %>/delete"method="post" >
+                    <button  type="submit" class="btn btn-danger" >delete </button>
                 </form>
               </td>
             </tr>

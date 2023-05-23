@@ -9,7 +9,9 @@ const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
 const bcrypt = require("bcrypt");
 const { post } = require("./server/routes/routes");
-const User = require("./server/models/users");
+const FormData =require('form-data')
+const data = new FormData()
+
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -79,7 +81,7 @@ app.post("/user/create", (req, res) => {
     })
     .catch(function (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: "FRONT END ERROR" });
     });
 });
 
@@ -136,7 +138,6 @@ app.get("/user/:user_id", (req, res) => {
   });
 });
 
-
 app.post("/user/:user_id/update", (req, res) => {
   let user_id = req.params.user_id;
   let username = req.body.username;
@@ -145,23 +146,50 @@ app.post("/user/:user_id/update", (req, res) => {
   let active = req.body.active;
   let sign_img = req.body.sign_img;
 
-  const url = "http://localhost:3000/user/"+ user_id+"/update";
-  const updateUser = {
+  const url = "http://localhost:3000/user/" + user_id + "/update";
+  const newUser = {
     username: username,
     email: email,
     password: password,
     active: active,
-    sign_img: sign_img,
   };
 
   axios
-  .post(url, updateUser)
-  .then(function (response) {
-    console.log("Status:", response.status);
+    .post(url, newUser)
+    .then(function (response) {
+      console.log("Status:", response.status);
       console.log("Data:", response.data);
       res.status(200).redirect("/users");
-  });
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).json({ error: "FRONT END ERROR" });
+    });
 });
+
+app.post('/user/:user_id/delete',(req,res)=>{
+  let user_id=req.params.user_id
+  
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'http://localhost:3000/user/'+user_id+'/delete',
+    data : data
+  };
+  
+  axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+    res.status(200).redirect('back')
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+})
+
+
+
 
 app.get("/password", (req, res) => {
   res.render("editpassword", {
