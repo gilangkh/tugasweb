@@ -18,7 +18,7 @@
                 <td><%= document.description %></td>
        <td>
             <a href="./<%= document.document_id %>"  type="button" class="btn btn-primary">Edit</a>
-            <form action="" >
+            <form action="/dokumen/<%= document.document_id %>/delete" method="post" >
                 <button  type="submit" class="btn btn-danger" >delete </button>
             </form>
           </td>

@@ -10,6 +10,7 @@ const expressLayouts = require("express-ejs-layouts");
 const bcrypt = require("bcrypt");
 const { post } = require("./server/routes/routes");
 const FormData = require("form-data");
+const { name } = require("ejs");
 const data = new FormData();
 
 app.use(express.static("public"));
@@ -228,64 +229,104 @@ app.get("/dokumen/index", (req, res) => {
 });
 
 //create dokumen
-app.get("/dokumen/create",(req,res)=>{
-  res.render("createDokumen",{
-    title:"createDokumen",
-    layout:"./layout/main-layout"
-  })
-})
+app.get("/dokumen/create", (req, res) => {
+  res.render("createDokumen", {
+    title: "createDokumen",
+    layout: "./layout/main-layout",
+  });
+});
 // --------------
-app.post("/dokumen/create",(req,res)=>{
-  let url = "http://localhost:3000/document/create"
-  let document_id=req.body.document_id;
+app.post("/dokumen/create", (req, res) => {
+  let url = "http://localhost:3000/document/create";
+  let document_id = req.body.document_id;
   let name = req.body.name;
   let filename = req.body.filename;
   let description = req.body.description;
 
   const createDoc = {
-    document_id : document_id,
-    name : name, 
-    filename : filename,
-    description : description
+    document_id: document_id,
+    name: name,
+    filename: filename,
+    description: description,
   };
 
   axios
-  .post(url,createDoc)
-  .then(function(response){
-    console.log("status", response.status);
-    console.log("data", response.data)
-    res.status(200).redirect("/dokumen/index")
-  })
-  .catch(function(error){
-    console.error(error)
-    res.status(500).json({error:"FRONT END ERROR KACIAN"})
-  });
+    .post(url, createDoc)
+    .then(function (response) {
+      console.log("status", response.status);
+      console.log("data", response.data);
+      res.status(200).redirect("/dokumen/index");
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).json({ error: "FRONT END ERROR KACIAN" });
+    });
 });
 
 // Edit Dokumen
 
-app.get('/dokumen/:document_id',(req,res)=>{
-  let document_id = req.params.document_id
-  const url = "http://localhost:3000/document/"+document_id;
+app.get("/dokumen/:document_id", (req, res) => {
+  let document_id = req.params.document_id;
+  const url = "http://localhost:3000/document/" + document_id;
+  axios.get(url).then(function (response) {
+    const doc = response.data;
+    res.render("editDokumen", {
+      title: "Edit Dokumen",
+      layout: "./layout/main-layout",
+      doc: doc,
+    });
+  });
+});
+
+app.post("/dokumen/:document_id/update", (req, res) => {
+  let document_id = req.params.document_id;
+  let name = req.body.name;
+  let filename = req.body.filename;
+  let description = req.body.description;
+
+  let url = "http://localhost:3000/document/" +document_id+ "/update";
+  const newUser = {
+    name: name,
+    filename: filename,
+    description: description,
+  };
+
   axios
-  .get(url)
-  .then(function(response){
-    const doc =response.data
-    res.render("editDokumen",{
-      title:"Edit Dokumen",
-      layout:"./layout/main-layout",
-      doc:doc
+    .post(url, newUser)
+    .then(function (response) {
+      console.log(response.status);
+      console.log(response.data);
+      res.status(200).redirect("/dokumen/index");
     })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).json({ error: "FRONT END ERROR" });
+    });
+});
+
+app.post("/dokumen/:document_id/delete",(req,res)=>{
+  let document_id = req.params.document_id;
+
+  let config={
+    method : "post",
+    maxBodyLength : Infinity,
+    url : "http://localhost:3000/document/"+document_id+"/delete",
+    data:data
+  }
+
+  axios
+  .request(config)
+  .then((response)=>{
+    console.log(JSON.stringify(response.data));
+    res.status(200).redirect("back")
+  })
+  .catch((error)=>{
+    config.log(error)
   })
 })
 
-app.post('/dokumen/:document_id/update')
 
-
-
-
-
-
+app.post("/dokumen/:document_id/update");
 
 /* =================================================================================*/
 app.listen(port, () => console.info("Front-End yang berjalan di port 8000"));
