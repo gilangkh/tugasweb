@@ -9,17 +9,17 @@
         <th>description</th>
         <th>Action</th>
       </tr>
-      <% data.forEach(function(user) { %>
+      <% data.forEach(function(document) { %>
         <tr>
             <tr>
                 <td><%= document.document_id %></td>
                 <td><%= document.name %></td>
                 <td><%= document.filename %></td>
                 <td><%= document.description %></td>
-       
-            <a href=""  type="button" class="btn btn-primary">Edit</a>
+       <td>
+            <a href="./<%= document.document_id %>"  type="button" class="btn btn-primary">Edit</a>
             <form action="" >
-                <button  type="button" class="btn btn-danger" >delete </button>
+                <button  type="submit" class="btn btn-danger" >delete </button>
             </form>
           </td>
         </tr>

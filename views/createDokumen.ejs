@@ -1,0 +1,70 @@
+
+
+<div class="container emp-profile">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="../public/images/Screenshot 2023-04-28 112527.png" alt="">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="profile-head">
+                                    <h2 id="heading">
+                                        Create Dokumen
+                                    </h2>
+                                 
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                               <hr>
+                             </li>
+                              
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                 
+                <form action="/dokumen/create" id="userForm" method="post">
+                    <div class="col-md-12" >
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                 </div>
+                                        <div class="row my-3">
+                                            <div class="col-md-6">
+                                                <label for="document_id">dokument id</label>
+                                                <input class="form-control" type="text" name="document_id" id="document_id" value="<%= doc. %>">
+                                            </div>
+                                        </div>
+                                        <div class="row my-3">
+                                            <div class="col-md-6">
+                                                <label for="name">name</label>
+                                                <input class="form-control" type="text" name="name" id="name" value="">
+                                            </div>
+                                        </div>
+                                        <div class="row my-3">
+                                             <div class="col-md-6">
+                                                <label for="filename">filename</label>
+                                                <div class="d-flex justify-content-between" >
+                                                    <input class="form-control col-md-12" type="file" name="filename" id="filename" value="">
+                                                </div>
+                                              </div>   
+                                        </div>
+                                        <div class="row my-3">
+                                            <div class="col-md-6">
+                                                <label for="description">description</label>
+                                                <input class="form-control" type="text" name="description" id="description"value="">
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <a href="/profile" class="btn btn-secondary">Kembali</a>
+                                        </div>
+                                
+                            </div>
+                             </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </form>           
+        </div>
+   

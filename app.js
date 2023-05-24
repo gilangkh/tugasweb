@@ -9,8 +9,8 @@ const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
 const bcrypt = require("bcrypt");
 const { post } = require("./server/routes/routes");
-const FormData =require('form-data')
-const data = new FormData()
+const FormData = require("form-data");
+const data = new FormData();
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,7 +18,11 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 
-//** authenticate */
+/* ======================*/
+/* USER  */
+/* ======================*/
+
+// authenticate
 app.get("/users", (req, res) => {
   var url = "http://localhost:3000/user/index";
   axios
@@ -167,29 +171,26 @@ app.post("/user/:user_id/update", (req, res) => {
     });
 });
 
-app.post('/user/:user_id/delete',(req,res)=>{
-  let user_id=req.params.user_id
-  
+app.post("/user/:user_id/delete", (req, res) => {
+  let user_id = req.params.user_id;
+
   let config = {
-    method: 'post',
+    method: "post",
     maxBodyLength: Infinity,
-    url: 'http://localhost:3000/user/'+user_id+'/delete',
-    data : data
+    url: "http://localhost:3000/user/" + user_id + "/delete",
+    data: data,
   };
-  
-  axios.request(config)
-  .then((response) => {
-    console.log(JSON.stringify(response.data));
-    res.status(200).redirect('back')
-  })
-  .catch((error) => {
-    console.log(error);
-  });
 
-})
-
-
-
+  axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      res.status(200).redirect("back");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
 
 app.get("/password", (req, res) => {
   res.render("editpassword", {
@@ -203,4 +204,88 @@ app.get("/signers", (req, res) => {
     layout: "./layout/main-layout",
   });
 });
+
+/* =================================================================================*/
+/*                                        DOKUMENT                                  */
+/* =================================================================================*/
+
+// list dokumen
+app.get("/dokumen/index", (req, res) => {
+  let config = "http://localhost:3000/document/index";
+
+  axios
+    .get(config)
+    .then(function (response) {
+      res.render("documentIndex", {
+        title: "List Dokument",
+        layout: "./layout/main-layout",
+        data: response.data,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+
+//create dokumen
+app.get("/dokumen/create",(req,res)=>{
+  res.render("createDokumen",{
+    title:"createDokumen",
+    layout:"./layout/main-layout"
+  })
+})
+// --------------
+app.post("/dokumen/create",(req,res)=>{
+  let url = "http://localhost:3000/document/create"
+  let document_id=req.body.document_id;
+  let name = req.body.name;
+  let filename = req.body.filename;
+  let description = req.body.description;
+
+  const createDoc = {
+    document_id : document_id,
+    name : name, 
+    filename : filename,
+    description : description
+  };
+
+  axios
+  .post(url,createDoc)
+  .then(function(response){
+    console.log("status", response.status);
+    console.log("data", response.data)
+    res.status(200).redirect("/dokumen/index")
+  })
+  .catch(function(error){
+    console.error(error)
+    res.status(500).json({error:"FRONT END ERROR KACIAN"})
+  });
+});
+
+// Edit Dokumen
+
+app.get('/dokumen/:document_id',(req,res)=>{
+  let document_id = req.params.document_id
+  const url = "http://localhost:3000/document/"+document_id;
+  axios
+  .get(url)
+  .then(function(response){
+    const doc =response.data
+    res.render("editDokumen",{
+      title:"Edit Dokumen",
+      layout:"./layout/main-layout",
+      doc:doc
+    })
+  })
+})
+
+app.post('/dokumen/:document_id/update')
+
+
+
+
+
+
+
+/* =================================================================================*/
 app.listen(port, () => console.info("Front-End yang berjalan di port 8000"));
