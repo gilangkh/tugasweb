@@ -5,12 +5,8 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
-const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
-const bcrypt = require("bcrypt");
-const { post } = require("./server/routes/routes");
 const FormData = require("form-data");
-const { name } = require("ejs");
 const data = new FormData();
 
 app.use(express.static("public"));

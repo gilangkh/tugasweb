@@ -2,16 +2,14 @@
 
 const express = require("express");
 const cors = require("cors");
-const db = require("./modules/db");
 const router = require("./routes/routes");
+const cookieParser = require("cookie-parser")
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser);
 
-async function main() {
-  let conection = db.connection;
-}
 
 const port = 3000;
 app.use(router);

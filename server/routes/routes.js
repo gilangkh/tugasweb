@@ -1,9 +1,14 @@
 const express =require('express')
 const UserController = require('../controllers/UserController.js')
 const DocumentConrtoller = require('../controllers/DocumentController.js')
+const AuthController = require('../controllers/AuthenController.js');
 const router = express.Router();
 
-// userROuter
+// AUth
+
+router.post('/login',AuthController.login)
+
+// UserRouter
 
 router.get('/user/index', UserController.getAllUser)
 router.post('/user/create', UserController.createUser);
@@ -18,6 +23,7 @@ router.post('/document/create',DocumentConrtoller.createDocument);
 router.get('/document/:document_id',DocumentConrtoller.getOneDocument);
 router.post('/document/:document_id/update',DocumentConrtoller.updateDocument);
 router.post('/document/:document_id/delete',DocumentConrtoller.deleteDocument);
+
 
 
 module.exports = router;
