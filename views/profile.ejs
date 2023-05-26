@@ -5,11 +5,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-img">
-                            <img src="/images/Screenshot 2023-04-28 112527.png" alt=""/>
-                            <div class="file btn btn-lg btn-primary">
-                                Change Photo
-                                <input type="file" name="file"/>
-                            </div>
+                           
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -39,34 +35,37 @@
                     <div class="col-md-8">
                         <div class="tab-content profile-tab" id="myTabContent">
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <label>User Id</label>
+                                            <div class="col-md-2">
+                                                <label for="username">Name</label>
                                             </div>
-
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Name</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>nama</p>
+                                            <div class="row col-md-6">
+                                                <input class="form-control" type="text" name="username" id="username" value="<%= user.username %>">
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Email</label>
+                                        <div class="row">   
+                                            <div class="col-md-2">
+                                                <label for="email">Email</label>
                                             </div>
-                                            <div class="col-md-6">
-                                                <p>nama@gmail.com</p>
+                                            <div class="row col-md-6">
+                                                <input class="form-control" type="email" name="email" id="email" value="<%= user.email %>">
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <label>active</label>
+                                            <div class="col-md-2">
+                                                <label for="active">active</label>
                                             </div>
-                                            <div class="col-md-6">
-                                                <p>1</p>
+                                            <div class="row col-md-6">
+                                                <input class="form-control" type="text" name="active" id="active" value="<%= user.active %>">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label for="sign_img">sign </label>
+                                            </div>
+                                            <div class="row col-md-6">
+                                                <input class="form-control" type="text" name="sign_img" id="sign_img" value="<%= user.sign_img %>">
                                             </div>
                                         </div>
                                 
@@ -74,7 +73,7 @@
                             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>Experience</label>
+                                                <label>asdsadExperience</label>
                                             </div>
                                             <div class="col-md-6">
                                                 <p>Expert</p>

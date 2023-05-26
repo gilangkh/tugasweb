@@ -5,8 +5,12 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
+const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
+const bcrypt = require("bcrypt");
 const FormData = require("form-data");
+const { name } = require("ejs");
+const { authenticateJWT } = require("./server/controllers/AuthenController");
 const data = new FormData();
 
 app.use(express.static("public"));
@@ -22,6 +26,7 @@ app.use(expressLayouts);
 // authenticate
 app.get("/users", (req, res) => {
   var url = "http://localhost:3000/user/index";
+
   axios
     .get(url)
     .then(function (response) {
@@ -34,13 +39,6 @@ app.get("/users", (req, res) => {
     .catch(function (error) {
       console.log(error);
     });
-});
-
-app.get("/login", (req, res) => {
-  res.render("login", {
-    title: "login",
-    layout: false,
-  });
 });
 
 app.get("/profile", (req, res) => {
@@ -280,7 +278,7 @@ app.post("/dokumen/:document_id/update", (req, res) => {
   let filename = req.body.filename;
   let description = req.body.description;
 
-  let url = "http://localhost:3000/document/" +document_id+ "/update";
+  let url = "http://localhost:3000/document/" + document_id + "/update";
   const newUser = {
     name: name,
     filename: filename,
@@ -300,29 +298,95 @@ app.post("/dokumen/:document_id/update", (req, res) => {
     });
 });
 
-app.post("/dokumen/:document_id/delete",(req,res)=>{
+app.post("/dokumen/:document_id/delete", (req, res) => {
   let document_id = req.params.document_id;
 
-  let config={
-    method : "post",
-    maxBodyLength : Infinity,
-    url : "http://localhost:3000/document/"+document_id+"/delete",
-    data:data
-  }
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "http://localhost:3000/document/" + document_id + "/delete",
+    data: data,
+  };
 
   axios
-  .request(config)
-  .then((response)=>{
-    console.log(JSON.stringify(response.data));
-    res.status(200).redirect("back")
-  })
-  .catch((error)=>{
-    config.log(error)
-  })
-})
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      res.status(200).redirect("back");
+    })
+    .catch((error) => {
+      config.log(error);
+    });
+});
 
+/*================================================================================== */
+/*                                        AUTH                                       */
+/* ================================================================================= */
 
-app.post("/dokumen/:document_id/update");
+app.get("/login", (req, res) => {
+  res.render("login", {
+    title: "login",
+    layout: false,
+  });
+});
 
-/* =================================================================================*/
+app.post("/login", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+
+  let data = JSON.stringify({
+    email: email,
+    password: password,
+  });
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "http://localhost:3000/login",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      res.status(200).redirect("/user/profile");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+
+app.get('/user/profile', async (req, res) => {
+  const token = req.header('Authorization');
+
+  try {
+    const response = await axios.get('http://localhost:3000/user/profile', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+
+    const user = response.data.response.user;
+    const token = response.data.response.token;
+
+    res.render('profile', {
+      title: 'Profile',
+      layout: './layout/main-layout',
+      user: user,
+      token: token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+/*================================================================================== */
+/*                                        END                                        */
+/* ================================================================================= */
 app.listen(port, () => console.info("Front-End yang berjalan di port 8000"));

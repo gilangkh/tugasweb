@@ -6,11 +6,13 @@ const router = express.Router();
 
 // AUth
 
-router.post('/login',AuthController.login)
+router.post('/login',AuthController.login);
+router.get('/user/profile',AuthController.authenticateJWT,AuthController.getProfile);
+router.post('/logout',AuthController.logout);
 
 // UserRouter
 
-router.get('/user/index', UserController.getAllUser)
+router.get('/user/index', UserController.getAllUser);
 router.post('/user/create', UserController.createUser);
 router.get('/user/:user_id',UserController.getOneUser)
 router.post('/user/:user_id/update', UserController.updateUser);

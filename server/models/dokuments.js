@@ -1,38 +1,39 @@
 const {Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
-const Dokument = sequelize.define('Dokument', 
-{
-    document_id: {
-        type:DataTypes.STRING,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    filename: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    description: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: false
-    },
-    updated_at: {
-        type: DataTypes.DATE,
-        allowNull: false
-    }
-}, 
-{
-    tableName: 'documents',
-    timestamps: true,
-    updatedAt: 'updated_at',
-    createdAt: 'created_at'
+const Signature = require('./signature');
+
+const Document = sequelize.define('Document', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  filename: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
 });
 
-module.exports = Dokument;
+Document.hasMany(Signature, { foreignKey: 'document_id' });
+Signature.belongsTo(Document, { foreignKey: 'document_id' });
+
+module.exports = Document;
+

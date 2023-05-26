@@ -1,76 +1,106 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const Sequelize = new Sequelize('mysql://root@localhost/dokumen');
-const User = require('./users')
-const Dokument = require('./dokuments');
-const Relation = require('./relation');
+const sequelize = new Sequelize('mysql://root@localhost/dokumen');
 
-
-const Signature = Sequelize.define('Signature', {
-  user_id: {
-    type: DataTypes.STRING(255),
+const Signature = sequelize.define('Signature', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    allowNull: false,
-    references: {
-        model: User,
-        key: 'user_id'
-      }
-  },
-  document_id: {
-    type: DataTypes.STRING(255),
-    primaryKey: true,
-    allowNull: false,
-    references: {
-        model: Dokument,
-        key: 'document_id'
-      }
   },
   jabatan: {
-    type: DataTypes.STRING(255),
-    allowNull: false
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   status: {
-    type: DataTypes.STRING(255),
-    allowNull: false
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   signed_at: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
   },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+    defaultValue: DataTypes.NOW,
   },
   updated_at: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-  }
-},
-{
-    sequelize,
-    tableName: 'signature',
-    timestamps: true,
-    updatedAt: 'updated_at',
-    createdAt: 'created_at',
-    indexes:[{
-        unique:true,
-        fields: ['user_id','document_id'],
-        name :'signature_pk'
-    }]
+    defaultValue: DataTypes.NOW,
+  },
+});
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  active: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  sign_img: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+});
+const Document = sequelize.define('Document', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  filename: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
 });
 
+Signature.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Signature, { foreignKey: 'user_id' });
 
-// Definisikan hubungan antara model User, Document, dan Signature
-// Signature.belongsTo(User, {
-//     foreignKey: 'user_id',
-//     as: 'User'
-// });
-
-// Signature.belongsTo(Dokument, {
-//     foreignKey: 'document_id',
-//     as: 'Dokument'
-// });
-// // Sinkronisasi model dengan database
-
+Signature.belongsTo(Document, { foreignKey: 'document_id' });
+Document.hasMany(Signature, { foreignKey: 'document_id' });
+console.log(Signature === sequelize.models.Signature);
 module.exports = Signature;
