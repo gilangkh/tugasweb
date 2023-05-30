@@ -1,7 +1,6 @@
 /** @format */
 
 const Document = require("../models/dokuments");
-const bodyParser = require("body-parser");
 
 const getAllDocuments = async (req, res) => {
   try {

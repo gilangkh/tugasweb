@@ -1,9 +1,8 @@
 const {Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
-const Signature = require('./signature');
 
 const Document = sequelize.define('Document', {
-  id: {
+  document_id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
@@ -30,10 +29,15 @@ const Document = sequelize.define('Document', {
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
-});
+},
+{
+    
+        "tableName" : "users",
+        timestamps : true, 
+        createdAt :'created_at',
+        updatedAt :'updated_at'
 
-Document.hasMany(Signature, { foreignKey: 'document_id' });
-Signature.belongsTo(Document, { foreignKey: 'document_id' });
+});
 
 module.exports = Document;
 

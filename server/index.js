@@ -5,6 +5,7 @@ const cors = require("cors");
 const db = require("./modules/db");
 const router = require("./routes/routes");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 
 const app = express();
 app.use(express.json());

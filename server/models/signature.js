@@ -1,18 +1,34 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
 
+const User = require('./users'); // Import model User
+const Document = require('./dokuments'); // Import model Document
+
+
 const Signature = sequelize.define('Signature', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+  user_id: {
+    type: DataTypes.STRING,
     primaryKey: true,
+    references:{
+      model :User,
+      key :'user_id'
+    }
+  
+  },
+  document_id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    references:{
+      model : Document,
+      key : 'document_id'
+    }
   },
   jabatan: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: false,
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: false,
   },
   signed_at: {
@@ -22,85 +38,24 @@ const Signature = sequelize.define('Signature', {
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW,
+   
   },
   updated_at: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW,
+  
   },
-});
-const User = sequelize.define('User', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
-  },
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  active: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  sign_img: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-  },
-});
-const Document = sequelize.define('Document', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  filename: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-  },
+}, {
+  tableName: 'signature',
+  timestamps: false,
+},
+{
+  
+    "tableName" : "signatures",
+    timestamps : true, 
+    createdAt :'created_at',
+    updatedAt :'updated_at'
+
 });
 
-Signature.belongsTo(User, { foreignKey: 'user_id' });
-User.hasMany(Signature, { foreignKey: 'user_id' });
-
-Signature.belongsTo(Document, { foreignKey: 'document_id' });
-Document.hasMany(Signature, { foreignKey: 'document_id' });
-console.log(Signature === sequelize.models.Signature);
 module.exports = Signature;

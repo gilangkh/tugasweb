@@ -19,9 +19,9 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 
-/* ======================*/
-/* USER  */
-/* ======================*/
+/* ================================================================*/
+/*                        U        S      E     R                  */
+/* ================================================================*/
 
 // authenticate
 app.get("/users", (req, res) => {
@@ -56,14 +56,12 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/user/create", (req, res) => {
-  let user_id = req.body.user_id;
   let username = req.body.username;
   let email = req.body.email;
   let password = req.body.password;
   let sign_img = req.body.sign_img;
 
   const createUser = {
-    user_id: user_id,
     username: username,
     email: email,
     password: password,
@@ -180,7 +178,7 @@ app.post("/user/:user_id/delete", (req, res) => {
     .request(config)
     .then((response) => {
       console.log(JSON.stringify(response.data));
-      res.status(200).redirect("back");
+      res.status(200).redirect("/users");
     })
     .catch((error) => {
       console.log(error);
@@ -353,20 +351,20 @@ app.post("/login", (req, res) => {
     .request(config)
     .then((response) => {
       console.log(JSON.stringify(response.data));
-      res.status(200).redirect("/user/profile");
+      res.status(200).redirect("/users");
     })
     .catch((error) => {
       console.log(error);
     });
 });
 
-app.get('/user/profile', async (req, res) => {
-  const token = req.header('Authorization');
+app.get("/user/profile", async (req, res) => {
+  const token = req.header("Authorization");
 
   try {
-    const response = await axios.get('http://localhost:3000/user/profile', {
+    const response = await axios.get("http://localhost:3000/user/profile", {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: token,
       },
     });
@@ -374,15 +372,15 @@ app.get('/user/profile', async (req, res) => {
     const user = response.data.response.user;
     const token = response.data.response.token;
 
-    res.render('profile', {
-      title: 'Profile',
-      layout: './layout/main-layout',
+    res.render("profile", {
+      title: "Profile",
+      layout: "./layout/main-layout",
       user: user,
       token: token,
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
