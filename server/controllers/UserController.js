@@ -3,10 +3,12 @@
   const User = require("../models/users");
   const bcrypt = require("bcrypt");
   const bodyParser = require('body-parser');
-  
   const app = express();
-  app.use(bodyParser.json());
-  
+  const path = require('path')
+  const multer = require('multer')
+  const fs = require('fs')
+ 
+// READ
   const getAllUser = async (req, res) => {
 
     try {
@@ -17,14 +19,16 @@
     }
   };
 
+  // CREATE
   const createUser = async (req, res, next) => {
     try {
+
       // let user_id = req.body.user_id;
       let username = req.body.username;
       let email = req.body.email;
       let password = req.body.password;
       let active = req.body.active;
-      let sign_img = req.body.sign_img;
+      let sign_img = req.file.path;
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -43,25 +47,35 @@
       };
       console.log(response)
       return res.status(200).json(response);
+    
     } catch (err) {
       console.log(err);
-      res.status(500).json({error:"data gagal ditambahkan"+err})
+      return res.status(500).json({error:"data gagal ditambahkan"+err})
     }
   };
+
+
+  // UPDATE
 
   const updateUser = async (req, res) => {
     const user_id=req.params.user_id;
     const data = req.body;
     const hashedPassword = await bcrypt.hash(data.password,10)
-    
+
+ 
     try{
       const newData = await User.findOne({where:{user_id:user_id}})
+      const oldSign = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\server', newData.sign_img)
+      fs.unlinkSync(oldSign)
+  
       if(newData)
       {
         newData.username=data.username,
         newData.email =data.email,
         newData.password = hashedPassword,
         newData.active = data.active,
+        newData.sign_img = req.file.path
+
         await newData.save();
 
         let response={
@@ -80,7 +94,7 @@
     }
 };
 
-
+// DELETE
   const deleteUser = async (req, res) => {
 
     let user_id = req.params.user_id;

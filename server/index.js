@@ -6,14 +6,15 @@ const db = require("./modules/db");
 const router = require("./routes/routes");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-
+const multer = require("multer");
 const app = express();
+const path = require('path')
+
+
+
 app.use(express.json());
 app.use(cors());
 
-async function main() {
-  let conection = db.connection;
-}
 
 const port = 3000;
 app.use(router);

@@ -51,7 +51,7 @@ const Signature = sequelize.define('Signature', {
 },
 {
   
-    "tableName" : "signatures",
+    "tableName" : "signature",
     timestamps : true, 
     createdAt :'created_at',
     updatedAt :'updated_at'

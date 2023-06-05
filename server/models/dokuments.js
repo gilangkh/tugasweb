@@ -32,7 +32,7 @@ const Document = sequelize.define('Document', {
 },
 {
     
-        "tableName" : "users",
+        "tableName" : "documents",
         timestamps : true, 
         createdAt :'created_at',
         updatedAt :'updated_at'

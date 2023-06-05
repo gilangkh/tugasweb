@@ -1,6 +1,11 @@
 /** @format */
 
 const Document = require("../models/dokuments");
+const path =require('path')
+const fs = require('fs')
+const multer =require('multer')
+
+
 
 const getAllDocuments = async (req, res) => {
   try {
@@ -8,6 +13,7 @@ const getAllDocuments = async (req, res) => {
     res.status(200).json(documents);
   } catch (err) {
     console.log(err);
+    res.status(500).json({error:"KACIAN EROR"})
   }
 };
 
@@ -15,7 +21,7 @@ const createDocument = async (req, res, next) => {
   try {
     let document_id = req.body.document_id;
     let name = req.body.name;
-    let filename = req.body.filename;
+    let filename = req.file.path;
     let description = req.body.description;
 
     const createDocument = await Document.create({
@@ -45,10 +51,15 @@ const updateDocument = async (req, res) => {
     const updatedDocument = await Document.findOne({
       where: { document_id: document_id },
     });
+    const oldData = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\server',updatedDocument.filename);
+    fs.unlinkSync(oldData)
+
     if (updatedDocument) {
-      (updatedDocument.name = data.name),
-        (updatedDocument.filename = data.filename),
-        (updatedDocument.description = data.description),
+
+        updatedDocument.name = data.name,
+        updatedDocument.filename = req.file.path,
+        updatedDocument.description = data.description,
+
         await updatedDocument.save();
 
       let response = {
@@ -74,6 +85,8 @@ const deleteDocument = async (req, res) => {
     const deletedDocument = await Document.findOne({
       where: { document_id: document_id },
     });
+    const oldData = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\server',deletedDocument.filename);
+    fs.unlinkSync(oldData)
 
     if (deletedDocument) {
       await deletedDocument.destroy();

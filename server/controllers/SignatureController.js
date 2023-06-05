@@ -1,5 +1,6 @@
+const { where } = require("sequelize");
 const Signature = require("../models/relation");
-
+const User = require("../models/users")
 
 
 const getAllSignature = async (req, res) => {
@@ -12,29 +13,46 @@ const getAllSignature = async (req, res) => {
 };
 
 const createSignature = async (req, res, next) => {
-  try {
-    const { user_id, document_id, jabatan, status } = req.body;
-
-    const createUser = await Signature.create({
-      user_id: user_id,
-      document_id: document_id,
-      jabatan: jabatan,
-      status: status,
-      signed_at: new Date(),
-      created_at: new Date(),
-      updated_at: new Date(),
-    });
-
-    let response = {
-      message: "data berhasil ditambahkan",
-      data: createUser,
-    };
-    console.log(response);
-    return res.status(200).json(response);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "data gagal ditambahkan" + err });
+  const user_id = "eb0fd5d8-644b-40de-8312-01525476d4b"
+  const sbm = await User.findOne({where : {user_id:user_id}})
+  if(sbm){
+  console.log(sbm.username+"Hebat")
   }
+  // try {
+  //   const { user_id, document_id, jabatan } = req.body;
+  //   const sbm = await User.findOne({
+  //     where: { user_id: user_id }
+  //   })
+  //   if(sbm){
+  //   const createUser = await Signature.bulkCreate([{
+  //     user_id: user_id,
+  //     document_id: document_id,
+  //     jabatan: jabatan,
+  //     status: "0",
+  //     signed_at: new Date(),
+  //     created_at: new Date(),
+  //     updated_at: new Date(),
+  //   },
+  //   {
+  //     user_id: user_id,
+  //     document_id: document_id,
+  //     jabatan: jabatan,
+  //     status: "Diajukan oleh"+sbm.username,
+  //     signed_at: new Date(),
+  //     created_at: new Date(),
+  //     updated_at: new Date(),
+  //   }]);
+
+  //   let response = {
+  //     message: "data berhasil ditambahkan",
+  //     data: createUser,
+  //   }};
+  //   console.log(response);
+  //   return res.status(200).json(response);
+  // } catch (err) {
+  //   console.log(err);
+  //   res.status(500).json({ error: "data gagal ditambahkan" + err });
+  // }
 };
 
 const updateSignature = async (req, res) => {

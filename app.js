@@ -9,9 +9,11 @@ const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
 const bcrypt = require("bcrypt");
 const FormData = require("form-data");
-const { name } = require("ejs");
-const { authenticateJWT } = require("./server/controllers/AuthenController");
+const multer = require('multer')
 const data = new FormData();
+const upload = multer({ dest: 'uploads/' });
+
+
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -382,7 +384,12 @@ app.get("/user/profile", async (req, res) => {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+  
 });
+/*================================================================================== */
+/*                                       TEST                                        */
+/* ================================================================================= */
+
 
 /*================================================================================== */
 /*                                        END                                        */
