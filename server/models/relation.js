@@ -12,4 +12,8 @@ User.hasMany(Signature, { foreignKey: 'user_id' });
 Signature.belongsTo(Document, { foreignKey: 'document_id' });
 Document.hasMany(Signature, { foreignKey: 'document_id' });
 console.log(Signature === sequelize.models.Signature);
-module.exports = Signature ;
+
+User.hasMany(Document, {foreignKey: 'user_id' });
+Document.belongsTo(User, {foreignKey: 'user_id'});
+
+module.exports = {Signature,User,Document };

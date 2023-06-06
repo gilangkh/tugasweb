@@ -5,18 +5,15 @@ const cors = require("cors");
 const db = require("./modules/db");
 const router = require("./routes/routes");
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const multer = require("multer");
 const app = express();
-const path = require('path')
-
-
-
+const Router = require("./routes/routes");
+const Middleware = require('./middleware/AuthToken')
 app.use(express.json());
 app.use(cors());
-
-
-const port = 3000;
+app.use(cookieParser(Middleware))
+app.use(express.static("public"));
+app.use("/", Router);
 app.use(router);
 
+const port = 3000;
 app.listen(port, () => console.log("Port Back-End jalan di port 3000"));

@@ -1,28 +1,28 @@
-// middleware untuk cek waktu Login
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const User = require("../models/users");
 const dotenv = require('dotenv');
-const express = require("express");
-const app = express();
-const jwt = require('jsonwebtoken');
+const cookieParser = require("cookie-parser");
+
 dotenv.config();
-const SECRET_TOKEN = process.env.SECRET_TOKEN;
-const verifyToken = (req, res, next) => {
-    
-    const token  = req.cookies.token;
-    if (token) {
-        jwt.verify(token, SECRET_TOKEN, (err, user) => {
-          if (err) {
-            return res.sendStatus(403);
-          }
 
-          req.user = user;
-          next();
-        });
-    } else {
-      return res.render('login')
-      res.sendStatus(401);
+
+
+const authenticateJWT = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ message: "GA ADA TOKEN" });
+  }
+
+  jwt.verify(token, process.env.SECRET_TOKEN, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "TOKEN SALAH" });
     }
-  };
-   
 
+    req.user = user;
+    next();
+  });
+};
 
-module.exports = verifyToken
+module.exports = authenticateJWT

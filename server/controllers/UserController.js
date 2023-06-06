@@ -1,6 +1,7 @@
   /** @format */
   const express = require('express')
-  const User = require("../models/users");
+  const Users= require("../models/relation");
+  const User = Users.User
   const bcrypt = require("bcrypt");
   const bodyParser = require('body-parser');
   const app = express();
@@ -27,8 +28,7 @@
       let username = req.body.username;
       let email = req.body.email;
       let password = req.body.password;
-      let active = req.body.active;
-      let sign_img = req.file.path;
+      let sign_img = req.file.filename;
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -37,7 +37,7 @@
         username: username,
         email: email,
         password: hashedPassword,
-        active: active,
+        active: 1,
         sign_img: sign_img,
       });
 
@@ -65,7 +65,7 @@
  
     try{
       const newData = await User.findOne({where:{user_id:user_id}})
-      const oldSign = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\server', newData.sign_img)
+      const oldSign = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\images', newData.sign_img)
       fs.unlinkSync(oldSign)
   
       if(newData)
@@ -74,9 +74,9 @@
         newData.email =data.email,
         newData.password = hashedPassword,
         newData.active = data.active,
-        newData.sign_img = req.file.path
+        newData.sign_img = req.file.filename
 
-        await newData.save();
+        await newData.save(); 
 
         let response={
           message :"data berhasil di ubah",
@@ -129,7 +129,7 @@
       {
         res.status(200).json(user)
       }else{
-        res.status(404).json({message:"Data tidak ditemukan"})
+        res.status(404).json({message:"Data tidak ditemukans"})
       }
       
     }catch(err){

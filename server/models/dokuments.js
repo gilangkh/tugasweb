@@ -1,4 +1,4 @@
-const {Sequelize, DataTypes } = require('sequelize');
+const {Sequelize, DataTypes, ForeignKeyConstraintError } = require('sequelize');
 const sequelize = new Sequelize('mysql://root@localhost/dokumen');
 
 const Document = sequelize.define('Document', {
@@ -6,6 +6,11 @@ const Document = sequelize.define('Document', {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
+  },
+   user_id: {
+    type: DataTypes.UUID,
+    allowNull :false
+    
   },
   name: {
     type: DataTypes.STRING,
@@ -29,7 +34,9 @@ const Document = sequelize.define('Document', {
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
+ 
 },
+
 {
     
         "tableName" : "documents",

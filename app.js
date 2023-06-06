@@ -9,17 +9,146 @@ const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
 const bcrypt = require("bcrypt");
 const FormData = require("form-data");
-const multer = require('multer')
+const multer = require("multer");
+const { token } = require("morgan");
 const data = new FormData();
-const upload = multer({ dest: 'uploads/' });
+const path = require("path");
+const e = require("cors");
+const MIDDLEWARE = require('./server/middleware/AuthToken')
+const fs = require("fs");
+const cookieParser = require('cookie-parser')
+
 
 
 
 app.use(express.static("public"));
+app.use("/server/public", express.static("/server/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.set("view engine", "ejs");
 app.use(expressLayouts);
+
+const imgStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().getTime() + "-" + file.originalname);
+  },
+});
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/document");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().getTime() + "-" + file.originalname);
+  },
+});
+const userFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+const docFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "application/msword" ||
+    file.mimetype === "application/pdf"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const uploadUser = multer({
+  storage: imgStorage,
+  fileFilter: userFilter,
+});
+const uploadDoc = multer({
+  storage: fileStorage,
+  fileFilter: docFilter,
+});
+
+/*================================================================================== */
+/*                                        AUTH                                       */
+/* ================================================================================= */
+
+app.get("/login", (req, res) => {
+  res.render("login", {
+    title: "login",
+    layout: false,
+  });
+});
+
+
+
+app.post("/login", (req, res) => {
+ 
+  let email = req.body.email;
+  let password = req.body.password;
+
+  let data = JSON.stringify({
+    "email": email,
+    "password":password
+  });
+  
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'http://localhost:3000/login',
+    headers: { 
+      'Content-Type': 'application/json', 
+      'Cookie': req.cookies
+    },
+    data : data
+  };
+  
+  axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+    res.status(200).redirect('/dokumen/index')
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+});
+/*================================================================================== */
+/*                                        MIDDLEWARE                                       */
+/* ================================================================================= */
+app.use(cookieParser())
+app.use(MIDDLEWARE)
+
+app.get("/user/profile", async (req, res) => {
+  const token = req.header("Authorization");
+
+  try {
+    const response = await axios.get("http://localhost:3000/user/profile", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    });
+
+    const user = response.data.response.user;
+    const token = response.data.response.token;
+
+    res.render("profile", {
+      title: "Profile",
+      layout: "./layout/main-layout",
+      user: user,
+      token: token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 /* ================================================================*/
 /*                        U        S      E     R                  */
@@ -57,30 +186,38 @@ app.get("/register", (req, res) => {
   });
 });
 
-app.post("/user/create", (req, res) => {
+app.post("/user/create", uploadUser.single("sign_img"), (req, res) => {
   let username = req.body.username;
   let email = req.body.email;
   let password = req.body.password;
-  let sign_img = req.body.sign_img;
+  let sign_img = req.file.filename;
+  let data = new FormData();
+  data.append("username", username);
+  data.append("email", email);
+  data.append("password", password);
+  data.append("sign_img", fs.createReadStream("public/images/" + sign_img));
 
-  const createUser = {
-    username: username,
-    email: email,
-    password: password,
-    active: 1,
-    sign_img: sign_img,
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "http://localhost:3000/user/create",
+    headers: {
+      Cookie:
+        "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiVVVJRCIsImVtYWlsIjoiYmFydTJAZ21haWwuY29tIiwiaWF0IjoxNjg1OTU5MDc0LCJleHAiOjE2ODU5NjI2NzR9.QfZj1qOvB4PpcvkHtJtgGA8lvHOcxN-pp0W5u-6LmUE",
+      ...data.getHeaders(),
+    },
+    data: data,
   };
 
   axios
-    .post("http://localhost:3000/user/create", createUser)
-    .then(function (response) {
-      console.log("Status:", response.status);
-      console.log("Data:", response.data);
-      res.status(200).redirect("/users");
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      res.status(200).redirect("/login");
     })
-    .catch(function (error) {
-      console.error(error);
-      res.status(500).json({ error: "FRONT END ERROR" });
+    .catch((error) => {
+      console.log(error);
+      res.status(400).redirect("/login");
     });
 });
 
@@ -230,30 +367,37 @@ app.get("/dokumen/create", (req, res) => {
   });
 });
 // --------------
-app.post("/dokumen/create", (req, res) => {
-  let url = "http://localhost:3000/document/create";
-  let document_id = req.body.document_id;
+app.post("/dokumen/create", uploadDoc.single("filename"), (req, res) => {
   let name = req.body.name;
-  let filename = req.body.filename;
+  let filename = req.file.filename;
+  let user_id = req.body.user_id;
   let description = req.body.description;
+  let data = new FormData();
+  data.append("name", name);
+  data.append("filename", fs.createReadStream("./public/document/" + filename));
+  data.append("description", description);
+  data.append("user_id", user_id);
 
-  const createDoc = {
-    document_id: document_id,
-    name: name,
-    filename: filename,
-    description: description,
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "http://localhost:3000/document/create",
+    headers: {
+      "Content-Type": "application/json, multipart/form-data",
+      Cookie:
+        "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiVVVJRCIsImVtYWlsIjoiYmFydTJAZ21haWwuY29tIiwiaWF0IjoxNjg1OTU5MDc0LCJleHAiOjE2ODU5NjI2NzR9.QfZj1qOvB4PpcvkHtJtgGA8lvHOcxN-pp0W5u-6LmUE",
+      ...data.getHeaders(),
+    },
+    data: data,
   };
-
   axios
-    .post(url, createDoc)
-    .then(function (response) {
-      console.log("status", response.status);
-      console.log("data", response.data);
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
       res.status(200).redirect("/dokumen/index");
     })
-    .catch(function (error) {
-      console.error(error);
-      res.status(500).json({ error: "FRONT END ERROR KACIAN" });
+    .catch((error) => {
+      console.log(error);
     });
 });
 
@@ -272,31 +416,44 @@ app.get("/dokumen/:document_id", (req, res) => {
   });
 });
 
-app.post("/dokumen/:document_id/update", (req, res) => {
-  let document_id = req.params.document_id;
-  let name = req.body.name;
-  let filename = req.body.filename;
-  let description = req.body.description;
+app.post(
+  "/dokumen/:document_id/update",
+  uploadDoc.single("filename"),
+  (req, res) => {
+    let name = req.body.name;
+    let filename = req.file.filename;
+    let description = req.body.description;
 
-  let url = "http://localhost:3000/document/" + document_id + "/update";
-  const newUser = {
-    name: name,
-    filename: filename,
-    description: description,
-  };
+    let data = new FormData();
+    data.append("name", name);
+    data.append(
+      "filename",
+      fs.createReadStream("./public/document/" + filename)
+    );
+    data.append("description", description);
 
-  axios
-    .post(url, newUser)
-    .then(function (response) {
-      console.log(response.status);
-      console.log(response.data);
-      res.status(200).redirect("/dokumen/index");
-    })
-    .catch(function (error) {
-      console.error(error);
-      res.status(500).json({ error: "FRONT END ERROR" });
-    });
-});
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "http://localhost:3000/document/2bc5f9d0-355e-460b-b725-4f2820d93f13/update",
+      headers: {
+        "Content-Type": "application/json",
+        ...data.getHeaders(),
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        res.status(200).redirect("back");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+);
 
 app.post("/dokumen/:document_id/delete", (req, res) => {
   let document_id = req.params.document_id;
@@ -319,77 +476,10 @@ app.post("/dokumen/:document_id/delete", (req, res) => {
     });
 });
 
-/*================================================================================== */
-/*                                        AUTH                                       */
-/* ================================================================================= */
 
-app.get("/login", (req, res) => {
-  res.render("login", {
-    title: "login",
-    layout: false,
-  });
-});
-
-app.post("/login", (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
-
-  let data = JSON.stringify({
-    email: email,
-    password: password,
-  });
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "http://localhost:3000/login",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: data,
-  };
-
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      res.status(200).redirect("/users");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
-
-app.get("/user/profile", async (req, res) => {
-  const token = req.header("Authorization");
-
-  try {
-    const response = await axios.get("http://localhost:3000/user/profile", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-    });
-
-    const user = response.data.response.user;
-    const token = response.data.response.token;
-
-    res.render("profile", {
-      title: "Profile",
-      layout: "./layout/main-layout",
-      user: user,
-      token: token,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-  
-});
 /*================================================================================== */
 /*                                       TEST                                        */
 /* ================================================================================= */
-
 
 /*================================================================================== */
 /*                                        END                                        */

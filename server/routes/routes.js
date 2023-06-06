@@ -3,6 +3,7 @@ const UserController = require('../controllers/UserController.js')
 const DocumentConrtoller = require('../controllers/DocumentController.js')
 const AuthController = require('../controllers/AuthenController.js');
 const SignatureController = require('../controllers/SignatureController')
+const Middleware = require('../middleware/AuthToken.js')
 const router = express.Router();
 
 // Multer 
@@ -13,7 +14,7 @@ const path = require('path')
 
 const imgStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'public/images');
+    cb(null, '../public/images');
   },
   filename: (req, file, cb) => {
     cb(null, new Date().getTime() + '-' + file.originalname);
@@ -21,7 +22,7 @@ const imgStorage = multer.diskStorage({
 });
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'public/document');
+      cb(null, '../public/document');
     },
     filename: (req, file, cb) => {
       cb(null, new Date().getTime() + '-' + file.originalname);
@@ -60,25 +61,27 @@ const uploadDoc = multer({
     fileFilter:docFilter
 })
 // AUth
-
 router.post('/login',AuthController.login);
-router.get('/user/profile',AuthController.authenticateJWT,AuthController.getProfile);
+router.post('/user/create',uploadUser.single('sign_img'), UserController.createUser);
 router.post('/logout',AuthController.logout);
 
+
+router.use(Middleware)
 // UserRouter
 
 router.get('/user/index', UserController.getAllUser);
-router.post('/user/create',uploadUser.single('sign_img'), UserController.createUser);
+
+router.get('/user/profile',AuthController.getProfile);
 router.get('/user/:user_id',UserController.getOneUser)
 router.post('/user/:user_id/update',uploadUser.single('sign_img'), UserController.updateUser);
 router.post('/user/:user_id/delete', UserController.deleteUser);
 
 // DocumentRouter
 
-router.get('/document/index',DocumentConrtoller.getAllDocuments);
+router.get('/document/index',AuthController.authenticateJWT,DocumentConrtoller.getAllDocuments);
 router.post('/document/create',uploadDoc.single('filename'),DocumentConrtoller.createDocument);
 router.get('/document/:document_id',DocumentConrtoller.getOneDocument);
-router.post('/document/:document_id/update',DocumentConrtoller.updateDocument);
+router.post('/document/:document_id/update',uploadDoc.single('filename'),DocumentConrtoller.updateDocument);
 router.post('/document/:document_id/delete',DocumentConrtoller.deleteDocument);
 
 // Singnature Router

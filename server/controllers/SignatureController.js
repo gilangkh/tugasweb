@@ -1,8 +1,5 @@
-const { where } = require("sequelize");
-const Signature = require("../models/relation");
-const User = require("../models/users")
-
-
+const Signatures = require("../models/relation");
+const Signature = Signatures.Signature
 const getAllSignature = async (req, res) => {
   try {
     const signatures = await Signature.findAll();
@@ -13,46 +10,29 @@ const getAllSignature = async (req, res) => {
 };
 
 const createSignature = async (req, res, next) => {
-  const user_id = "eb0fd5d8-644b-40de-8312-01525476d4b"
-  const sbm = await User.findOne({where : {user_id:user_id}})
-  if(sbm){
-  console.log(sbm.username+"Hebat")
-  }
-  // try {
-  //   const { user_id, document_id, jabatan } = req.body;
-  //   const sbm = await User.findOne({
-  //     where: { user_id: user_id }
-  //   })
-  //   if(sbm){
-  //   const createUser = await Signature.bulkCreate([{
-  //     user_id: user_id,
-  //     document_id: document_id,
-  //     jabatan: jabatan,
-  //     status: "0",
-  //     signed_at: new Date(),
-  //     created_at: new Date(),
-  //     updated_at: new Date(),
-  //   },
-  //   {
-  //     user_id: user_id,
-  //     document_id: document_id,
-  //     jabatan: jabatan,
-  //     status: "Diajukan oleh"+sbm.username,
-  //     signed_at: new Date(),
-  //     created_at: new Date(),
-  //     updated_at: new Date(),
-  //   }]);
+  try {
+    const { user_id, document_id, jabatan } = req.body;
 
-  //   let response = {
-  //     message: "data berhasil ditambahkan",
-  //     data: createUser,
-  //   }};
-  //   console.log(response);
-  //   return res.status(200).json(response);
-  // } catch (err) {
-  //   console.log(err);
-  //   res.status(500).json({ error: "data gagal ditambahkan" + err });
-  // }
+    const createUser = await Signature.create({
+      user_id: user_id,
+      document_id: document_id,
+      jabatan: jabatan,
+      status: "0",
+      signed_at: "0",
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    let response = {
+      message: "data berhasil ditambahkan",
+      data: createUser,
+    };
+    console.log(response);
+    return res.status(200).json(response);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "data gagal ditambahkan" + err });
+  }
 };
 
 const updateSignature = async (req, res) => {

@@ -1,11 +1,13 @@
-/** @format */
-
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/users");
+const dotenv = require('dotenv');
+const cookieParser = require("cookie-parser");
+
+dotenv.config();
 
 const generateToken = (user) => {
-  return jwt.sign({ user_id: user.user_id, email: user.email }, "gilang", {
+  return jwt.sign({ user_id: user.user_id, email: user.email }, process.env.SECRET_TOKEN, {
     expiresIn: "1h",
   });
 };
@@ -15,9 +17,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email required" });
-    } else if (!password) {
-      return res.status(400).json({ message: " password are required" });
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
     const user = await User.findOne({ where: { email } });
@@ -33,7 +33,7 @@ const login = async (req, res) => {
     }
 
     const token = generateToken(user);
-
+    res.cookie("token", token, { httpOnly: true });
     res.status(200).json({ token });
   } catch (error) {
     console.error(error);
@@ -41,14 +41,15 @@ const login = async (req, res) => {
   }
 };
 
+// JWT
 const authenticateJWT = (req, res, next) => {
-  const token = req.header("Authorization");
+  const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).json({ message: "GA ADA TOKEN" });
   }
 
-  jwt.verify(token, "gilang", (err, decoded) => {
+  jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: "TOKEN SALAH" });
     }
@@ -59,10 +60,10 @@ const authenticateJWT = (req, res, next) => {
 };
 
 const getProfile = async (req, res) => {
-  const token = req.header("Authorization");
+  const token = req.cookies.token;
   try {
     const { user_id } = req.user;
-    const user = await User.findOne({ where: { user_id } });
+    const user = await User.findOne({ where: { user_id:user_id } });
 
     if (!user) {
       return res.status(400).json({ message: "tidak ketemu" });

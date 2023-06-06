@@ -1,6 +1,8 @@
 <section class="content">
     <h1>dokumen List</h1>
-
+  <div class="py-3">
+    <a class="btn btn-primary" href="/dokumen/create">Add Doc</a>
+  </div>
     <table class="table table-hover">
       <tr>
         <th>No</th>
@@ -9,10 +11,10 @@
         <th>description</th>
         <th>Action</th>
       </tr>
-      <% data.forEach(function(document,index) { %>
+      <% data.forEach(function(document) { %>
         <tr>
             <tr>
-                <td><%= index+1 %></td>
+                <td><%= document.document_id%></td>
                 <td><%= document.name %></td>
                 <td><%= document.filename %></td>
                 <td><%= document.description %></td>
