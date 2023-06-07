@@ -20,7 +20,7 @@ const cookieParser = require('cookie-parser')
 
 
 
-
+app.use(cookieParser())
 app.use(express.static("public"));
 app.use("/server/public", express.static("/server/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -75,10 +75,13 @@ const uploadDoc = multer({
   fileFilter: docFilter,
 });
 
+
+
 /*================================================================================== */
 /*                                        AUTH                                       */
 /* ================================================================================= */
 
+// --------LOGIN----------
 app.get("/login", (req, res) => {
   res.render("login", {
     title: "login",
@@ -88,8 +91,7 @@ app.get("/login", (req, res) => {
 
 
 
-app.post("/login", (req, res) => {
- 
+app.post("/login",async (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
 
@@ -97,41 +99,87 @@ app.post("/login", (req, res) => {
     "email": email,
     "password":password
   });
-  
-  let config = {
+
+  let config = { 
     method: 'post',
     maxBodyLength: Infinity,
     url: 'http://localhost:3000/login',
     headers: { 
       'Content-Type': 'application/json', 
-      'Cookie': req.cookies
     },
     data : data
   };
-  
+ 
   axios.request(config)
+  
   .then((response) => {
+  
     console.log(JSON.stringify(response.data));
-    res.status(200).redirect('/dokumen/index')
+    res.status(200).cookie('token',response.data.token).setHeader('Cookie',response.data.token).redirect('/dokumen/index')
+    console.log(response.data)
   })
   .catch((error) => {
     console.log(error);
   });
 });
+
+// --------------REGISTER-------------
+
+app.get("/register", (req, res) => {
+  res.render("register", {
+    title: "Register",
+    layout: false,
+  });
+});
+
+app.post("/user/create", uploadUser.single("sign_img"), (req, res) => {
+  let username = req.body.username;
+  let email = req.body.email;
+  let password = req.body.password;
+  let sign_img = req.file.filename;
+  let data = new FormData();
+  data.append("username", username);
+  data.append("email", email);
+  data.append("password", password);
+  data.append("sign_img", fs.createReadStream("public/images/" + sign_img));
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "http://localhost:3000/user/create",
+    headers: {
+      'Content-type':'multipart/form-data',
+      ...data.getHeaders(),
+    },
+    data: data,
+  };
+
+  axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      res.status(200).redirect("/login");
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).redirect("/login");
+    });
+});
+
 /*================================================================================== */
 /*                                        MIDDLEWARE                                       */
 /* ================================================================================= */
-app.use(cookieParser())
+
+
 app.use(MIDDLEWARE)
 
 app.get("/user/profile", async (req, res) => {
-  const token = req.header("Authorization");
 
   try {
     const response = await axios.get("http://localhost:3000/user/profile", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        'Cookies': req.cookies.token,
       },
     });
 
@@ -150,6 +198,25 @@ app.get("/user/profile", async (req, res) => {
   }
 });
 
+// -------------LOGOUT---------------
+
+app.post("/user/logout",async(req,res)=>{
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'http://localhost:3000/logout',
+    headers: { }
+  };
+  
+  axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+})
 /* ================================================================*/
 /*                        U        S      E     R                  */
 /* ================================================================*/
@@ -177,48 +244,6 @@ app.get("/profile", (req, res) => {
     title: "profile",
     layout: "./layout/main-layout",
   });
-});
-
-app.get("/register", (req, res) => {
-  res.render("register", {
-    title: "Register",
-    layout: false,
-  });
-});
-
-app.post("/user/create", uploadUser.single("sign_img"), (req, res) => {
-  let username = req.body.username;
-  let email = req.body.email;
-  let password = req.body.password;
-  let sign_img = req.file.filename;
-  let data = new FormData();
-  data.append("username", username);
-  data.append("email", email);
-  data.append("password", password);
-  data.append("sign_img", fs.createReadStream("public/images/" + sign_img));
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "http://localhost:3000/user/create",
-    headers: {
-      Cookie:
-        "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiVVVJRCIsImVtYWlsIjoiYmFydTJAZ21haWwuY29tIiwiaWF0IjoxNjg1OTU5MDc0LCJleHAiOjE2ODU5NjI2NzR9.QfZj1qOvB4PpcvkHtJtgGA8lvHOcxN-pp0W5u-6LmUE",
-      ...data.getHeaders(),
-    },
-    data: data,
-  };
-
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      res.status(200).redirect("/login");
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(400).redirect("/login");
-    });
 });
 
 app.get("/dokumen", (req, res) => {
@@ -343,20 +368,24 @@ app.get("/signers", (req, res) => {
 
 // list dokumen
 app.get("/dokumen/index", (req, res) => {
-  let config = "http://localhost:3000/document/index";
-
-  axios
-    .get(config)
-    .then(function (response) {
-      res.render("documentIndex", {
-        title: "List Dokument",
-        layout: "./layout/main-layout",
-        data: response.data,
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  const token = req.cookies.token
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'http://localhost:3000/document/index',
+    headers: { 
+      "Content-Type": "application/json",
+    }
+  };
+  
+  axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+    res.cookie('token',token,{httpOnly:true}).setHeader('Cookie',token)
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 });
 
 //create dokumen
@@ -484,4 +513,4 @@ app.post("/dokumen/:document_id/delete", (req, res) => {
 /*================================================================================== */
 /*                                        END                                        */
 /* ================================================================================= */
-app.listen(port, () => console.info("Front-End yang berjalan di port 8000"));
+app.listen(port, () => console.info("Front-End yang berjalan di http://localhost:8000"));

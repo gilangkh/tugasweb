@@ -78,7 +78,7 @@ router.post('/user/:user_id/delete', UserController.deleteUser);
 
 // DocumentRouter
 
-router.get('/document/index',AuthController.authenticateJWT,DocumentConrtoller.getAllDocuments);
+router.get('/document/index',DocumentConrtoller.getAllDocuments);
 router.post('/document/create',uploadDoc.single('filename'),DocumentConrtoller.createDocument);
 router.get('/document/:document_id',DocumentConrtoller.getOneDocument);
 router.post('/document/:document_id/update',uploadDoc.single('filename'),DocumentConrtoller.updateDocument);

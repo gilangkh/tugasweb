@@ -9,14 +9,14 @@ const multer =require('multer')
 
 
 const getAllDocuments = async (req, res) => {
-  console.log(req.signedCookies )
-  // try {
-  //   const documents = await Document.findAll();
-  //   res.status(200).json(documents);
-  // } catch (err) {
-  //   console.log(err);
-  //   res.status(500).json({error:"KACIAN EROR"})
-  // }
+
+  try {
+    const documents = await Document.findAll();
+    res.status(200).json(documents);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({error:"KACIAN EROR"})
+  }
 };
 
 const createDocument = async (req, res, next) => {

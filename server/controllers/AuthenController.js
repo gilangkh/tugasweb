@@ -79,21 +79,27 @@ const getProfile = async (req, res) => {
     res.status(500).json({ error: "KACIAN ERROR" });
   }
 };
-let invalidToken = [];
-const logout = (req, res) => {
-  try {
-    const token = req.header("Authorization");
 
+const logout = async (req, res) => {
+  try {
+    // Dapatkan token dari cookie
+    const token = req.cookies.token;
+
+    // Jika token tidak ada, berarti pengguna belum login
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    invalidToken.push(token);
-    res.status(200).json({ message: "logout success" });
+
+    // Hapus token cookie
+    res.clearCookie("token");
+
+    res.status(200).json({ message: "Logout success" });
   } catch (error) {
     console.error(error);
-    res.statu(500).json({ error: "Kacian ERROR" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 module.exports = {
   login,
   authenticateJWT,
