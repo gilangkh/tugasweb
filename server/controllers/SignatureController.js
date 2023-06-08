@@ -1,5 +1,13 @@
-const Signatures = require("../models/relation");
-const Signature = Signatures.Signature
+
+const { PDFDocument } = require("pdf-lib");
+const relation = require("../models/relation");
+const Signature = relation.Signature
+const User = relation.User
+const Document = relation.Document
+const axios = require('axios');
+const fs =require('fs')
+const path = require('path')
+
 const getAllSignature = async (req, res) => {
   try {
     const signatures = await Signature.findAll();
@@ -108,10 +116,68 @@ const getOneSignature = async (req, res) => {
   }
 };
 
+
+const signDoc = async (req, res) => {
+  let {  document_id } = req.body;
+  let user_id = req.user.user_id
+  const img = await User.findOne({ where: { user_id: user_id } });
+  const docPDF = await Document.findOne({ where: { document_id: document_id } });
+
+  const docUrl = 'E:\\Magang Lea\\inventaris\\tugasweb\\public\\document\\' + docPDF.filename;
+  const imgUrl = 'E:\\Magang Lea\\inventaris\\tugasweb\\public\\images\\' + img.sign_img; // URL gambar
+
+  try {
+    const imageData = fs.readFileSync(imgUrl);
+    const pdfData = fs.readFileSync(docUrl);
+
+    // Membuat instance PDFDocument dari data PDF yang ada
+    const pdfDoc = await PDFDocument.load(pdfData);
+
+    // Mengakses halaman pertama pada dokumen PDF
+    const page = pdfDoc.getPages()[0];
+
+    // Memuat gambar ke dalam dokumen PDF
+    const image = await pdfDoc.embedPng(imageData);
+
+    // Mengatur ukuran dan posisi gambar pada halaman
+    const scale = 60 / image.height;
+    const { width, height } = image.scale(scale);
+ // Mengurangi skala gambar menjadi 10%
+    const x = 310; // Koordinat x pada pojok kiri halaman
+    const y = 370; // Koordinat y pada pojok kiri halaman
+    page.drawImage(image, {
+      x,
+      y,
+      width,
+      height,
+    });
+
+    // Mengenerate hasil dokumen PDF dalam bentuk buffer
+    const pdfBytes = await pdfDoc.save();
+
+    const outputFileName = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\document\\', docPDF.filename);
+    const targetDirectory = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\old_document\\',docPDF.filename);
+    const newFilePath = path.join(targetDirectory);
+    fs.renameSync(outputFileName, newFilePath);
+
+     fs.writeFileSync(outputFileName, pdfBytes);
+  
+    // Memindahkan file dengan nama yang sama ke folder lain
+    
+    res.contentType('application/pdf');
+    res.status(200).send(Buffer.from(pdfBytes));
+  } catch (error) {
+    console.log('Terjadi kesalahan:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan saat menghasilkan PDF' });
+  }
+}
+
+
 module.exports = {
   getAllSignature,
   createSignature,
   updateSignature,
   deleteSignature,
   getOneSignature,
+  signDoc,
 }

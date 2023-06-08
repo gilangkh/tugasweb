@@ -65,6 +65,9 @@ router.post('/login',AuthController.login);
 router.post('/user/create',uploadUser.single('sign_img'), UserController.createUser);
 router.post('/logout',AuthController.logout);
 
+// TEST-------------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------------
 
 router.use(Middleware)
 // UserRouter
@@ -85,11 +88,15 @@ router.post('/document/:document_id/update',uploadDoc.single('filename'),Documen
 router.post('/document/:document_id/delete',DocumentConrtoller.deleteDocument);
 
 // Singnature Router
+
 router.get('/signature/index',SignatureController.getAllSignature)
 router.post('/signature/create',SignatureController.createSignature)
 router.get('/signature/:user_id/:document_id',SignatureController.getOneSignature)
 router.post('/signature/:user_id/:document_id/update',SignatureController.updateSignature)
 router.post('/signature/:user_id/:document_id/delete',SignatureController.deleteSignature)
+
+// ---V2
+router.post('/sign',SignatureController.signDoc)
 
 // export
 module.exports = router;

@@ -65,7 +65,7 @@
  
     try{
       const newData = await User.findOne({where:{user_id:user_id}})
-      const oldSign = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\images', newData.sign_img)
+      const oldSign = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\images\\', newData.sign_img)
       fs.unlinkSync(oldSign)
   
       if(newData)

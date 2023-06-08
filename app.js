@@ -1,7 +1,7 @@
 /** @format */
 
 const express = require("express");
-const axios = require("axios");
+const axios = require('axios');
 const bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
@@ -28,6 +28,24 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 
+
+const instance = axios.create({
+  baseURL: 'https://localhost:8000', // Set your base URL here
+  timeout: 500000, // Set the request timeout (in milliseconds) here
+});
+app.use((req,res,next)=>{
+
+  let token = req.cookies.token
+  if(token){
+  instance.defaults.baseURL = 'https://api.example.com';
+  instance.defaults.headers.common['Authorization'] = 'Bearer ${token}';
+   }else{
+    delete instance.defaults.headers.common['Authorization']
+  }
+  next();
+})
+
+
 const imgStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./public/images");
@@ -36,6 +54,8 @@ const imgStorage = multer.diskStorage({
     cb(null, new Date().getTime() + "-" + file.originalname);
   },
 });
+
+
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./public/document");
@@ -44,6 +64,8 @@ const fileStorage = multer.diskStorage({
     cb(null, new Date().getTime() + "-" + file.originalname);
   },
 });
+
+
 const userFilter = (req, file, cb) => {
   if (
     file.mimetype === "image/png" ||
@@ -55,6 +77,8 @@ const userFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
+
+
 const docFilter = (req, file, cb) => {
   if (
     file.mimetype === "application/msword" ||
@@ -110,12 +134,12 @@ app.post("/login",async (req, res) => {
     data : data
   };
  
-  axios.request(config)
-  
+  config.withCredentials=true;
+  instance.request(config)
   .then((response) => {
   
     console.log(JSON.stringify(response.data));
-    res.status(200).cookie('token',response.data.token).setHeader('Cookie',response.data.token).redirect('/dokumen/index')
+    res.status(200).cookie("token",response.data.token).redirect('/dokumen/index')
     console.log(response.data)
   })
   .catch((error) => {
@@ -378,10 +402,10 @@ app.get("/dokumen/index", (req, res) => {
     }
   };
   
-  axios.request(config)
+  config.withCredentials=true;
+  instance.request(config)
   .then((response) => {
     console.log(JSON.stringify(response.data));
-    res.cookie('token',token,{httpOnly:true}).setHeader('Cookie',token)
   })
   .catch((error) => {
     console.log(error);
