@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mendapatkan Data User</title>
+</head>
+<body>
+  <h1>Mendapatkan Data User</h1>
+
+  <script>
+    // Mengambil nilai token dari cookie
+    const getToken = () => {
+      const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))
+        .split('=')[1];
+
+      return cookieValue;
+    };
+
+    // Mengirim permintaan GET ke rute /api/user dengan token
+    const getUserData = (token) => {
+      fetch('http://localhost:3000/user/profile', {
+        headers: {
+          Authorization: token
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Menampilkan data pengguna pada halaman
+          const userContainer = document.createElement('div');
+          userContainer.innerHTML = `
+            <h2>Data Pengguna:</h2>
+            <p>Nama: ${data.user}</p>
+            <p>Email: ${data.user}</p>
+            <p>Pesan: ${data.message}</p>
+          `;
+          document.body.appendChild(userContainer);
+        })
+        .catch(error => {
+          console.error('Terjadi kesalahan:', error);
+        });
+    };
+
+    // Mengambil token dan mendapatkan data pengguna
+    const token = getToken();
+    if (token) {
+      getUserData(token);
+    } else {
+      console.log('Token tidak ditemukan');
+    }
+  </script>
+</body>
+</html>

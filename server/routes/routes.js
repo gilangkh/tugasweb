@@ -73,7 +73,6 @@ router.use(Middleware)
 // UserRouter
 
 router.get('/user/index', UserController.getAllUser);
-
 router.get('/user/profile',AuthController.getProfile);
 router.get('/user/:user_id',UserController.getOneUser)
 router.post('/user/:user_id/update',uploadUser.single('sign_img'), UserController.updateUser);

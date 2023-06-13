@@ -7,43 +7,40 @@ const app = express();
 const port = 8000;
 const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
-const bcrypt = require("bcrypt");
 const FormData = require("form-data");
 const multer = require("multer");
-const { token } = require("morgan");
+const Router = require('./routes/routes')
 const data = new FormData();
 const path = require("path");
-const e = require("cors");
-const MIDDLEWARE = require('./server/middleware/AuthToken')
+const cors = require("cors");
 const fs = require("fs");
-const cookieParser = require('cookie-parser')
 
+const session = require('express-session')
 
+app.use('/static', express.static('public', { 
+  setHeaders: (res, path) => {
+    if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}));
+app.use(session({
+  secret: 'gilang',
+  resave: false,
+  saveUninitialized: true
+}));
 
-app.use(cookieParser())
-app.use(express.static("public"));
-app.use("/server/public", express.static("/server/public"));
+app.use('/public', express.static(path.join(process.cwd(), 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.set("view engine", "ejs");
 app.use(expressLayouts);
+app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
+app.use("/",Router)
 
-
-const instance = axios.create({
-  baseURL: 'https://localhost:8000', // Set your base URL here
-  timeout: 500000, // Set the request timeout (in milliseconds) here
-});
-app.use((req,res,next)=>{
-
-  let token = req.cookies.token
-  if(token){
-  instance.defaults.baseURL = 'https://api.example.com';
-  instance.defaults.headers.common['Authorization'] = 'Bearer ${token}';
-   }else{
-    delete instance.defaults.headers.common['Authorization']
-  }
-  next();
-})
 
 
 const imgStorage = multer.diskStorage({
@@ -115,37 +112,38 @@ app.get("/login", (req, res) => {
 
 
 
-app.post("/login",async (req, res) => {
+app.post("/login", async (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
 
   let data = JSON.stringify({
     "email": email,
-    "password":password
+    "password": password
   });
-
-  let config = { 
+  
+  let config = {
     method: 'post',
     maxBodyLength: Infinity,
     url: 'http://localhost:3000/login',
     headers: { 
       'Content-Type': 'application/json', 
     },
-    data : data
+    data: data
   };
- 
-  config.withCredentials=true;
-  instance.request(config)
-  .then((response) => {
   
-    console.log(JSON.stringify(response.data));
-    res.status(200).cookie("token",response.data.token).redirect('/dokumen/index')
-    console.log(response.data)
-  })
-  .catch((error) => {
+  try {
+    const response = await axios.request(config);
+    let token = response.data.response.token;
+    console.log("ini login" + token);
+    req.session.token = token
+    res.setHeader('authorization', token);
+    res.redirect("/dokumen/index");
+  } catch (error) {
     console.log(error);
-  });
+    res.status(500).json("Error");
+  }
 });
+
 
 // --------------REGISTER-------------
 
@@ -195,15 +193,13 @@ app.post("/user/create", uploadUser.single("sign_img"), (req, res) => {
 /* ================================================================================= */
 
 
-app.use(MIDDLEWARE)
 
 app.get("/user/profile", async (req, res) => {
-
   try {
     const response = await axios.get("http://localhost:3000/user/profile", {
       headers: {
         "Content-Type": "application/json",
-        'Cookies': req.cookies.token,
+        "Authorization": `Bearer ${req.session.token}`, // Menggunakan token dari sesi
       },
     });
 
@@ -221,6 +217,7 @@ app.get("/user/profile", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 // -------------LOGOUT---------------
 
@@ -247,21 +244,32 @@ app.post("/user/logout",async(req,res)=>{
 
 // authenticate
 app.get("/users", (req, res) => {
+  const header = req.headers['authorization'];
+  
   var url = "http://localhost:3000/user/index";
-
   axios
-    .get(url)
-    .then(function (response) {
-      res.render("userIndex", {
-        title: "daftar User",
-        layout: "./layout/main-layout",
-        data: response.data,
-      });
+    .get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${header}`
+      }
+    })
+    .then(function (users) {
+      // res.render("nav", {
+      //   title: "Daftar User",
+      //   layout: "./layout/main-layout",
+      //   data: response.data // Menggunakan response.data untuk mendapatkan data yang dikirim dari '/user/index'
+      // });
+      console.log("gilang" + users.data);
     })
     .catch(function (error) {
       console.log(error);
     });
 });
+
+// Endpoint '/user/index'
+
+
 
 app.get("/profile", (req, res) => {
   res.render("profile", {
@@ -392,20 +400,21 @@ app.get("/signers", (req, res) => {
 
 // list dokumen
 app.get("/dokumen/index", (req, res) => {
-  const token = req.cookies.token
+  let token = req.headers['authorization']
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
     url: 'http://localhost:3000/document/index',
     headers: { 
       "Content-Type": "application/json",
+      'authorization' :'Bearers '+token
     }
   };
   
   config.withCredentials=true;
-  instance.request(config)
+  axios.request(config)
   .then((response) => {
-    console.log(JSON.stringify(response.data));
+    console.log(JSON.stringify("gilang "));
   })
   .catch((error) => {
     console.log(error);

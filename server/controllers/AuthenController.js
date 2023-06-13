@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const dotenv = require('dotenv');
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
 dotenv.config();
 
@@ -15,12 +16,12 @@ const generateToken = (user) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    let datetime = new Date().toISOString()
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email :email} });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -31,10 +32,17 @@ const login = async (req, res) => {
     if (!match) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-
+  
     const token = generateToken(user);
-    res.cookie("token", token, { httpOnly: true });
-    res.status(200).json({ token });
+    req.session.token = token
+
+    let response ={
+      token : token,
+      datetime :datetime,
+      session : token
+    }
+    res.setHeader('authorization',token)
+    res.status(200).json({ response });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -72,8 +80,10 @@ const getProfile = async (req, res) => {
       user: user,
       token: token,
     };
+
     console.log(response);
     res.status(200).json({ response });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "KACIAN ERROR" });
