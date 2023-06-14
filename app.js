@@ -116,33 +116,28 @@ app.post("/login", async (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
 
-  let data = JSON.stringify({
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Cookie", "Cookie_1=value; connect.sid=s%3AVcrCvzyqrUON6THXPefPKkhqW31Ad0Gm.PAIi49sMOQb7%2BVzxWeuqsAST968%2Fu4cauWbldFF0%2Bic; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzE4NzE4ZjgtZWVhNS00OGMxLTk4OWUtMzE4Y2IwZmRjZGNjIiwiZW1haWwiOiJnaWxhbmdAZ21haWwuY29tIiwiaWF0IjoxNjg2NzAzMjUwLCJleHAiOjE2ODY3MDY4NTB9.WjVuO2E3awfw01EqAoLcAoxMav_gY-8o09T8eSEtuwc");
+  
+  var raw = JSON.stringify({
     "email": email,
     "password": password
   });
   
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'http://localhost:3000/login',
-    headers: { 
-      'Content-Type': 'application/json', 
-    },
-    data: data
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
   };
   
-  try {
-    const response = await axios.request(config);
-    let token = response.data.response.token;
-    console.log("ini login" + token);
-    req.session.token = token
-    res.setHeader('authorization', token);
-    res.redirect("/dokumen/index");
-  } catch (error) {
-    console.log(error);
-    res.status(500).json("Error");
-  }
+  fetch("http://localhost:3000/login", requestOptions)
+    .then(response => console.log(Object.keys(response)))
+    .catch(error => console.log('error', error));
 });
+
+
 
 
 // --------------REGISTER-------------
@@ -400,7 +395,7 @@ app.get("/signers", (req, res) => {
 
 // list dokumen
 app.get("/dokumen/index", (req, res) => {
-  let token = req.headers['authorization']
+  let token = req.headers["cookie"]
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
@@ -414,7 +409,13 @@ app.get("/dokumen/index", (req, res) => {
   config.withCredentials=true;
   axios.request(config)
   .then((response) => {
-    console.log(JSON.stringify("gilang "));
+    const key = Object.keys(req.headers)
+    console.log(JSON.stringify("dokumen respons sesi = " +key));
+    console.log("ini tokens = "+token)
+    res.render("documentIndex",{
+      title :"list dokumen",
+      layout : "./layout/main-layout"
+    })
   })
   .catch((error) => {
     console.log(error);
@@ -446,9 +447,7 @@ app.post("/dokumen/create", uploadDoc.single("filename"), (req, res) => {
     url: "http://localhost:3000/document/create",
     headers: {
       "Content-Type": "application/json, multipart/form-data",
-      Cookie:
-        "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiVVVJRCIsImVtYWlsIjoiYmFydTJAZ21haWwuY29tIiwiaWF0IjoxNjg1OTU5MDc0LCJleHAiOjE2ODU5NjI2NzR9.QfZj1qOvB4PpcvkHtJtgGA8lvHOcxN-pp0W5u-6LmUE",
-      ...data.getHeaders(),
+        ...data.getHeaders(),
     },
     data: data,
   };

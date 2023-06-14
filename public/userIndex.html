@@ -1,111 +1,147 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title><%- title %></title>
-    <link rel="stylesheet" href="/public/css/styles.css">
-    <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="stylesheet" href="/public/css/document.css">
-    <link rel="stylesheet" href="/public/css/sendsign.css">
-    <link rel="stylesheet" href="/public/css/sign.css">
-    <link rel="stylesheet" href="/public/css/t-view.css">
-    <link rel="stylesheet" href="/public/css/template.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    
-<!------ Include the above in your HEAD tag ---------->
-  </head>
-    <body class="body">
-      <div class="navbar" id="">
-        <div>
-          <h1 class="pala">Anura Sign</h1>
-        </div>
-        <div>
-       <a href="/login"><button class="btn btn-danger"> logout</button></a>
-        </div>
-      </div>
-  
-  
-      <!--Dashboard  -->
-  
-  <div class="display">
-  
-  
-  <div class="dashboard" id="default">
-      <div class="img">
-      <a href="/profile">  <img src="" alt="">Profile</a>
-      </div>
-  
-      <hr>
-      <div class="margin-items">
-            <a class="label" href="/dokumen">Dokumen</a>
-      </div>
-      <hr>
-      <div class="margin-items">
-            <a class="label"href="/template">Template</a>
-      </div>
+<head>
+  <meta charset="utf-8">
+  <title><%- title %></title>
+  <link rel="stylesheet" href="/public/css/styles.css">
+  <link rel="stylesheet" href="/public/css/style.css">
+  <link rel="stylesheet" href="/public/css/document.css">
+  <link rel="stylesheet" href="/public/css/sendsign.css">
+  <link rel="stylesheet" href="/public/css/sign.css">
+  <link rel="stylesheet" href="/public/css/t-view.css">
+  <link rel="stylesheet" href="/public/css/template.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 
-      <hr>
-      <div class="margin-items">
-        <a class="label"href="/dokumen/index">DOC</a>
-  </div>
-     <hr>
-      <div class="margin-items">
-          <a class="btn btn-primary"href="/sign">Sign Dokumen</a>
-      </div>
-  
-  
-  
-  
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!------ Include the above in your HEAD tag ---------->
+</head>
+
+<body class="body">
+  <div class="navbar" id="">
+    <div>
+      <h1 class="pala">Anura Sign</h1>
     </div>
-      <!-- Body -->
-      <div class="content">
-        <div class="col-md-10">
-            <section class="content">
-                <h1>User List</h1>
-        
-                <table class="table table-hover">
-                  <tr>
-                    <th>User ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Active</th>
-                    <th>Action</th>
-                  </tr>
-                  
-                  <% data.forEach(function(user) { %>
-                    <tr>
-                      <td><%= user.user_id %></td>
-                      <td><%= user.username %></td>
-                      <td><%= user.email %></td>
-                      <td><%= user.active %></td>
-                      <td>
-                        <a href="/user/<%= user.user_id %>"  type="button" class="btn btn-primary">Edit</a>
-                        <form action="/user/<%= user.user_id %>/delete"method="post" >
-                            <button  type="submit" class="btn btn-danger" >delete </button>
-                        </form>
-                      </td>
-                    </tr>
-                  <% }); %>
-                </table>
-            </section>
-           
-        
-        </div>
-        </div>
-        </div>
-               
-            </div>
-            </div>
-          </div>
-        
-          <script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div>
+      <a href="/login"><button class="btn btn-danger"> logout</button></a>
+    </div>
+  </div>
+
+
+  <!--Dashboard  -->
+
+  <div class="display">
+
+
+    <div class="dashboard" id="default">
+      <div class="img">
+        <a href="/profile"> <img src="" alt="">Profile</a>
+      </div>
+      <div class="margin-items">
+        <a class="label" href="/profil">User</a>
+      </div>
+      <hr>
+      <div class="margin-items">
+        <a class="label" href="/dokumen">Dokumen</a>
+      </div>
+      <hr>
+      <div class="margin-items">
+        <a class="label" href="/template">Template</a>
+      </div>
+
+      <hr>
+      <div class="margin-items">
+        <a class="label" href="/dokumen/index">DOC</a>
+      </div>
+      <hr>
+      <div class="margin-items">
+        <a class="btn btn-primary" href="/sign">Sign Dokumen</a>
+      </div>
+
+
+
+
+    </div>
+    <!-- Body -->
+
+    <div class="content">
+      <div class="col-md-10">
+        <section class="content">
+          <h1>User List</h1>
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody">
+              <!-- User list will be dynamically generated here -->
+            </tbody>
+          </table>
         </section>
-        </body>
-        
-        </html>
-      
-  
+      </div>
+    </div>
+
+
+  </div>
+
+  </div>
+  </div>
+  </div>
+
+  <script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "/login1"; // Redirect to the login page if token doesn't exist
+    }
+    var myHeaders = new Headers();
+    myHeaders.append("authorization", "Bearer " + token);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    fetch("http://localhost:3000/user/index", requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.getElementById("userTableBody");
+        tableBody.innerHTML = "";
+
+        data.forEach(user => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${user.user_id}</td>
+            <td>${user.username}</td>
+            <td>${user.email}</td>
+            <td>${user.active}</td>
+            <td>
+              <a href="/user/${user.user_id}" type="button" class="btn btn-primary">Edit</a>
+              <form action="/user/${user.user_id}/delete" method="post">
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            </td>
+          `;
+
+          tableBody.appendChild(row);
+        });
+      })
+      .catch(error => console.log('Error:', error));
+  </script>
+
+  </section>
+</body>
+
+</html>

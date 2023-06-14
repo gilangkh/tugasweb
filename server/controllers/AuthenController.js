@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const dotenv = require('dotenv');
-const cookieParser = require("cookie-parser");
+
 const session = require("express-session");
 
 dotenv.config();
@@ -41,8 +41,9 @@ const login = async (req, res) => {
       datetime :datetime,
       session : token
     }
+   
     res.setHeader('authorization',token)
-    res.status(200).json({ response });
+    res.status(200).json({ response ,message:"login succes"});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -50,25 +51,9 @@ const login = async (req, res) => {
 };
 
 // JWT
-const authenticateJWT = (req, res, next) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.status(401).json({ message: "GA ADA TOKEN" });
-  }
-
-  jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ message: "TOKEN SALAH" });
-    }
-
-    req.user = decoded;
-    next();
-  });
-};
 
 const getProfile = async (req, res) => {
-  const token = req.cookies.token;
+
   try {
     const { user_id } = req.user;
     const user = await User.findOne({ where: { user_id:user_id } });
@@ -78,7 +63,6 @@ const getProfile = async (req, res) => {
     }
     let response = {
       user: user,
-      token: token,
     };
 
     console.log(response);
@@ -92,16 +76,8 @@ const getProfile = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    // Dapatkan token dari cookie
-    const token = req.cookies.token;
 
     // Jika token tidak ada, berarti pengguna belum login
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    // Hapus token cookie
-    res.clearCookie("token");
 
     res.status(200).json({ message: "Logout success" });
   } catch (error) {
@@ -112,7 +88,6 @@ const logout = async (req, res) => {
 
 module.exports = {
   login,
-  authenticateJWT,
   getProfile,
   logout,
 };

@@ -11,31 +11,20 @@ router.get("/login1", (req, res) => {
     res.sendFile(filePath);
   });
 
-  router.get('/profil', async (req, res) => {
-    const token = req.session.token; // Ambil token dari session (sesuaikan dengan implementasi token Anda)
-  
-    if (!token) {
-      console.log("Login gagal");
-      return res.redirect('/login1');
-      
-    } 
-    
-
-    try {
-        const decodedToken = jwtDecoded(token);
-        console.log(decodedToken)
-      res.sendFile(path.join(__dirname, '../public/new.html'));
-      console.log("Login berhasil");
-    } catch (error) {
-      console.log("Token tidak valid:", error);
-      return res.redirect('/login');
-    }
+  router.get('/profil', async (req, res) => {  
+    const filePath = path.join(__dirname, '../public', 'profile.html');
+    res.sendFile(filePath);
   });
 
+  
 
 
-// USER
+/*---------------USER------------*/
 
+router.get('/user/index', (req, res) => {
+  const filePath = path.join(__dirname, '../public', 'userIndex.html');
+  res.sendFile(filePath);
+});
 
 // DOKUMEN
 

@@ -10,13 +10,13 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1]
     
     if (token == null){ 
-    console.log("token"+token)
+    console.log("middleware tidak ada token ="+token)
     return res.sendStatus(401)
     }
     jwt.verify(token, secret, async (err, user) => {
         
         if (err) {
-        return res.json(err)
+        return res.json("Middleware salah")
         }
 
         console.log(authHeader)
