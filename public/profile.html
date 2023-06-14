@@ -113,7 +113,7 @@
                   </div>
                   <div class="row">
                     <div class="col-md-2">
-                      <label for="sign_img">Sign</label>
+                      <label for="sign_img">Sign Image</label>
                     </div>
                     <div class="row col-md-6">
                       <img id="sign_img" src="" alt="">
@@ -153,8 +153,8 @@
           document.getElementById("username").value = user.username;
           document.getElementById("email").value = user.email;
           document.getElementById("active").value = user.active;
-          document.getElementById("sign_img").src = user.signImage;
-        })
+          document.getElementById("sign_img").src = `/public/images/${user.sign_img}`;
+       })
         .catch(error => console.log('error', error));
     }
   </script>
