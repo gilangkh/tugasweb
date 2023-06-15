@@ -25,6 +25,11 @@ router.get('/user/index', (req, res) => {
   const filePath = path.join(__dirname, '../public', 'userIndex.html');
   res.sendFile(filePath);
 });
+router.get('/users/:user_id', (req, res) => {
+  const filePath = path.join(__dirname, '../public', 'new.html');
+  res.sendFile(filePath);
+});
+
 
 // DOKUMEN
 

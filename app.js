@@ -15,7 +15,8 @@ const path = require("path");
 const cors = require("cors");
 const fs = require("fs");
 
-const session = require('express-session')
+const session = require('express-session');
+const authenticateToken = require("./server/middleware/AuthToken");
 
 app.use('/static', express.static('public', { 
   setHeaders: (res, path) => {
@@ -73,7 +74,7 @@ const userFilter = (req, file, cb) => {
   } else {
     cb(null, false);
   }
-};
+};  
 
 
 const docFilter = (req, file, cb) => {
@@ -97,7 +98,6 @@ const uploadDoc = multer({
 });
 
 
-
 /*================================================================================== */
 /*                                        AUTH                                       */
 /* ================================================================================= */
@@ -110,36 +110,6 @@ app.get("/login", (req, res) => {
   });
 });
 
-
-
-app.post("/login", async (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
-
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Cookie", "Cookie_1=value; connect.sid=s%3AVcrCvzyqrUON6THXPefPKkhqW31Ad0Gm.PAIi49sMOQb7%2BVzxWeuqsAST968%2Fu4cauWbldFF0%2Bic; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzE4NzE4ZjgtZWVhNS00OGMxLTk4OWUtMzE4Y2IwZmRjZGNjIiwiZW1haWwiOiJnaWxhbmdAZ21haWwuY29tIiwiaWF0IjoxNjg2NzAzMjUwLCJleHAiOjE2ODY3MDY4NTB9.WjVuO2E3awfw01EqAoLcAoxMav_gY-8o09T8eSEtuwc");
-  
-  var raw = JSON.stringify({
-    "email": email,
-    "password": password
-  });
-  
-  var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
-  };
-  
-  fetch("http://localhost:3000/login", requestOptions)
-    .then(response => console.log(Object.keys(response)))
-    .catch(error => console.log('error', error));
-});
-
-
-
-
 // --------------REGISTER-------------
 
 app.get("/register", (req, res) => {
@@ -149,244 +119,39 @@ app.get("/register", (req, res) => {
   });
 });
 
-app.post("/user/create", uploadUser.single("sign_img"), (req, res) => {
-  let username = req.body.username;
-  let email = req.body.email;
-  let password = req.body.password;
-  let sign_img = req.file.filename;
-  let data = new FormData();
-  data.append("username", username);
-  data.append("email", email);
-  data.append("password", password);
-  data.append("sign_img", fs.createReadStream("public/images/" + sign_img));
 
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "http://localhost:3000/user/create",
-    headers: {
-      'Content-type':'multipart/form-data',
-      ...data.getHeaders(),
-    },
-    data: data,
-  };
-
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      res.status(200).redirect("/login");
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(400).redirect("/login");
-    });
-});
-
-/*================================================================================== */
-/*                                        MIDDLEWARE                                       */
-/* ================================================================================= */
-
-
-
-app.get("/user/profile", async (req, res) => {
-  try {
-    const response = await axios.get("http://localhost:3000/user/profile", {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${req.session.token}`, // Menggunakan token dari sesi
-      },
-    });
-
-    const user = response.data.response.user;
-    const token = response.data.response.token;
-
-    res.render("profile", {
-      title: "Profile",
-      layout: "./layout/main-layout",
-      user: user,
-      token: token,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-
-// -------------LOGOUT---------------
-
-app.post("/user/logout",async(req,res)=>{
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'http://localhost:3000/logout',
-    headers: { }
-  };
-  
-  axios.request(config)
-  .then((response) => {
-    console.log(JSON.stringify(response.data));
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
-})
 /* ================================================================*/
 /*                        U        S      E     R                  */
 /* ================================================================*/
+//------------- List Users---------------
 
-// authenticate
 app.get("/users", (req, res) => {
-  const header = req.headers['authorization'];
-  
-  var url = "http://localhost:3000/user/index";
-  axios
-    .get(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${header}`
-      }
-    })
-    .then(function (users) {
-      // res.render("nav", {
-      //   title: "Daftar User",
-      //   layout: "./layout/main-layout",
-      //   data: response.data // Menggunakan response.data untuk mendapatkan data yang dikirim dari '/user/index'
-      // });
-      console.log("gilang" + users.data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+   res.render("userIndex", {
+        title: "Daftar User",
+        layout: "./layout/layout.ejs",
+       });
 });
 
-// Endpoint '/user/index'
-
-
-
+//------------ Profile User--------------
 app.get("/profile", (req, res) => {
   res.render("profile", {
     title: "profile",
-    layout: "./layout/main-layout",
+    layout: "./layout/layout.ejs",
   });
 });
 
-app.get("/dokumen", (req, res) => {
-  res.render("document", {
-    title: "Dokumen",
-    layout: "./layout/main-layout",
-  });
-});
-app.get("/index", (req, res) => {
-  res.render("nav", {
-    title: "Home",
-    layout: "./layout/main-layout",
-  });
-});
-app.get("/sendsign", (req, res) => {
-  res.render("sendsign", {
-    title: "SendSign",
-    layout: "./layout/main-layout",
-  });
-});
-app.get("/sign", (req, res) => {
-  res.render("Sign", {
-    title: "Sign",
-    layout: "./layout/main-layout",
-  });
-});
-app.get("/tview", (req, res) => {
-  res.render("template-view", {
-    title: "SendSign",
-    layout: "./layout/main-layout",
-  });
-});
-app.get("/template", (req, res) => {
-  res.render("template", {
-    title: "template    ",
-    layout: "./layout/main-layout",
-  });
-});
+
 
 // Menampilkan User
 
 app.get("/user/:user_id", (req, res) => {
-  let user_id = req.params.user_id;
-  const url = "http://localhost:3000/user/" + user_id;
-
-  axios.get(url).then(function (response) {
-    const user = response.data;
-    res.render("editProfile", {
-      title: "edit User",
-      layout: "./layout/main-layout",
-      user: user,
-    });
+  res.render("editProfile", {
+    title: "Edit Profile",
+    layout: "./layout/layout.ejs",
   });
 });
-
-app.post("/user/:user_id/update", (req, res) => {
-  let user_id = req.params.user_id;
-  let username = req.body.username;
-  let email = req.body.email;
-  let password = req.body.password;
-  let active = req.body.active;
-  let sign_img = req.body.sign_img;
-
-  const url = "http://localhost:3000/user/" + user_id + "/update";
-  const newUser = {
-    username: username,
-    email: email,
-    password: password,
-    active: active,
-  };
-
-  axios
-    .post(url, newUser)
-    .then(function (response) {
-      console.log("Status:", response.status);
-      console.log("Data:", response.data);
-      res.status(200).redirect("/users");
-    })
-    .catch(function (error) {
-      console.error(error);
-      res.status(500).json({ error: "FRONT END ERROR" });
-    });
-});
-
-app.post("/user/:user_id/delete", (req, res) => {
-  let user_id = req.params.user_id;
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "http://localhost:3000/user/" + user_id + "/delete",
-    data: data,
-  };
-
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      res.status(200).redirect("/users");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
-
-app.get("/password", (req, res) => {
-  res.render("editpassword", {
-    title: "Edit Password",
-    layout: "./layout/main-layout",
-  });
-});
-app.get("/signers", (req, res) => {
-  res.render("signers", {
-    title: "Signer  ",
-    layout: "./layout/main-layout",
-  });
+app.post("/user/:user_id/update", uploadUser.single("sign_img"), (req, res) => {
+  res.json({ message: "File berhasil diunggah" });
 });
 
 /* =================================================================================*/
@@ -541,7 +306,48 @@ app.post("/dokumen/:document_id/delete", (req, res) => {
 /*================================================================================== */
 /*                                       TEST                                        */
 /* ================================================================================= */
-
+app.get("/dokumen", (req, res) => {
+  res.render("document", {
+    title: "Dokumen",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/index", (req, res) => {
+  res.render("nav", {
+    title: "Home",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/sendsign", (req, res) => {
+  res.render("sendsign", {
+    title: "SendSign",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/sign", (req, res) => {
+  res.render("Sign", {
+    title: "Sign",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/tview", (req, res) => {
+  res.render("template-view", {
+    title: "SendSign",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/template", (req, res) => {
+  res.render("template", {
+    title: "template    ",
+    layout: "./layout/main-layout",
+  });
+});
+app.get("/signers", (req, res) => {
+  res.render("signers", {
+    title: "Signer  ",
+    layout: "./layout/main-layout",
+  });
+});
 /*================================================================================== */
 /*                                        END                                        */
 /* ================================================================================= */

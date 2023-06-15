@@ -1,125 +1,105 @@
-
-
-<div class="container emp-profile">
-            <form method="post">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="profile-img">
-                           
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="profile-head">
-                                    <h5>
-                                        Gilang Kharisma
-                                    </h5>
-                                 
-                            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
-                                </li>
-                              
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <a href="editprofile" class="btn btn-secondary" name="btnAddMore" value="Edit Profile">Edit Profile</a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="profile-work">
-                    
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="tab-content profile-tab" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                    
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                <label for="username">Name</label>
-                                            </div>
-                                            <div class="row col-md-6">
-                                                <input class="form-control" type="text" name="username" id="username" value="<%= user.username %>">
-                                            </div>
-                                        </div>
-                                        <div class="row">   
-                                            <div class="col-md-2">
-                                                <label for="email">Email</label>
-                                            </div>
-                                            <div class="row col-md-6">
-                                                <input class="form-control" type="email" name="email" id="email" value="<%= user.email %>">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                <label for="active">active</label>
-                                            </div>
-                                            <div class="row col-md-6">
-                                                <input class="form-control" type="text" name="active" id="active" value="<%= user.active %>">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                <label for="sign_img">sign </label>
-                                            </div>
-                                            <div class="row col-md-6">
-                                                <input class="form-control" type="text" name="sign_img" id="sign_img" value="<%= user.sign_img %>">
-                                            </div>
-                                        </div>
-                                
-                            </div>
-                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>asdsadExperience</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>Expert</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Hourly Rate</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>10$/hr</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Total Projects</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>230</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>English Level</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>Expert</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Availability</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>6 months</p>
-                                            </div>
-                                        </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label>Your Bio</label><br/>
-                                        <p>Your detail description</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>           
+<!-- Body -->
+<div class="content">
+  <div class="container emp-profile">
+    <div id="profile">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="profile-img"></div>
         </div>
+        <div class="col-md-6">
+          <div class="profile-head">
+            <h5 id="profile-name">Halo ,</h5>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                  aria-selected="true">About</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <a id="editProfileBtn" class="btn btn-secondary" name="btnAddMore" value="Edit Profile">Edit Profile</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+
+          <div class="row">
+            <div class="col-md-6">
+            </div>
+            <div class="row col-md-6">
+              <img id="sign_img" src="" alt="">
+            </div>
+          </div>
+
+
+        </div>
+        <div class="col-md-8">
+          <div class="tab-content profile-tab" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <div class="row">
+                <div class="col-md-2">
+                  <label for="username">Name</label>
+                </div>
+                <div class="row col-md-6">
+                  <input class="form-control" type="text" name="username" id="username">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-2">
+                  <label for="email">Email</label>
+                </div>
+                <div class="row col-md-6">
+                  <input class="form-control" type="email" name="email" id="email">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-2">
+                  <label for="active">Active</label>
+                </div>
+                <div class="row col-md-6">
+                  <input class="form-control" type="text" name="active" id="active">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const token = sessionStorage.getItem("token");
+
+      if (!token) {
+        window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+      } else {
+        const myHeaders = new Headers();
+        myHeaders.append("authorization", "Bearer " + token);
+
+        const requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+
+        fetch("http://localhost:3000/profile", requestOptions)
+          .then(response => response.json())
+          .then(data => {
+            const {
+              user
+            } = data.response;
+            document.getElementById("username").value = user.username;
+            document.getElementById("email").value = user.email;
+            document.getElementById("active").value = user.active;
+            document.getElementById("sign_img").src = `/public/images/${user.sign_img}`;
+
+            const profileNameElement = document.getElementById("profile-name");
+            profileNameElement.innerText = `Halo ${user.username}`;
+
+            const editProfileBtn = document.getElementById("editProfileBtn");
+            editProfileBtn.href = `/user/${user.user_id}`;
+          })
+          .catch(error => console.log('error', error));
+      }
+    </script>

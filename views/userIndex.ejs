@@ -1,34 +1,68 @@
-<div class="col-md-10">
-    <section class="content">
-        <h1>User List</h1>
+    <!-- Body -->
 
-        <table class="table table-hover">
-          <tr>
-            <th>User ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Active</th>
-            <th>Action</th>
-          </tr>
-          
-          <% data.forEach(function(user) { %>
-            <tr>
-              <td><%= user.user_id %></td>
-              <td><%= user.username %></td>
-              <td><%= user.email %></td>
-              <td><%= user.active %></td>
-              <td>
-                <a href="/user/<%= user.user_id %>"  type="button" class="btn btn-primary">Edit</a>
-                <form action="/user/<%= user.user_id %>/delete"method="post" >
-                    <button  type="submit" class="btn btn-danger" >delete </button>
-                </form>
-              </td>
-            </tr>
-          <% }); %>
-        </table>
-    </section>
-   
+    <div class="content">
+      <div class="col-md-10">
+        <section class="content">
+          <h1>User List</h1>
 
-</div>
-</div>
-</div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody">
+              <!-- User list will be dynamically generated here -->
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </div>
+  <script>
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+    }
+    var myHeaders = new Headers();
+    myHeaders.append("authorization", "Bearer " + token);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    fetch("http://localhost:3000/user/index", requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.getElementById("userTableBody");
+        tableBody.innerHTML = "";
+
+        data.forEach(user => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${user.user_id}</td>
+            <td>${user.username}</td>
+            <td>${user.email}</td>
+            <td>${user.active}</td>
+            <td>
+              <a href="/user/${user.user_id}" type="button" class="btn btn-primary">Edit</a>
+              <form action="/user/${user.user_id}/delete" method="post">
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            </td>
+          `;
+
+          tableBody.appendChild(row);
+        });
+      })
+      .catch(error => console.log('Error:', error));
+  </script>
+
+ 

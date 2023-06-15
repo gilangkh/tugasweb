@@ -63,17 +63,18 @@ const uploadDoc = multer({
 // AUth
 router.post('/login',AuthController.login);
 router.post('/user/create',uploadUser.single('sign_img'), UserController.createUser);
-router.post('/logout',AuthController.logout);
+router.post('/logout',Middleware,AuthController.logout);
 
 // TEST-------------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------------
 
 router.use(Middleware)
+
 // UserRouter
 
 router.get('/user/index', UserController.getAllUser);
-router.get('/user/profile',AuthController.getProfile);
+router.get('/profile',AuthController.getProfile);
 router.get('/user/:user_id',UserController.getOneUser)
 router.post('/user/:user_id/update',uploadUser.single('sign_img'), UserController.updateUser);
 router.post('/user/:user_id/delete', UserController.deleteUser);

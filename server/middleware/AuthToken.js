@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 
-function authenticateToken(req, res, next) {
+const authenticateToken =(req, res, next)=> {
 
     dotenv.config();
     let secret = process.env.SECRET_TOKEN;
@@ -18,9 +18,7 @@ function authenticateToken(req, res, next) {
         if (err) {
         return res.json("Middleware salah")
         }
-
-        console.log(authHeader)
-        console.log(token)
+        console.log("ini token di middleware = "+"-"+user.user_id)
         req.user = user
         
         next()

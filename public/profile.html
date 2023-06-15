@@ -133,7 +133,7 @@
     const token = sessionStorage.getItem("token");
 
     if (!token) {
-      window.location.href = "/login1"; // Redirect to the login page if token doesn't exist
+      window.location.href = "/login"; // Redirect to the login page if token doesn't exist
     } else {
       const myHeaders = new Headers();
       myHeaders.append("authorization", "Bearer " + token);

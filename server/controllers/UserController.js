@@ -65,6 +65,9 @@
  
     try{
       const newData = await User.findOne({where:{user_id:user_id}})
+      if(!newData){
+        console.log("User Not Found");
+      }
       const oldSign = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\images\\', newData.sign_img)
       fs.unlinkSync(oldSign)
   
@@ -75,7 +78,7 @@
         newData.password = hashedPassword,
         newData.active = data.active,
         newData.sign_img = req.file.filename
-
+        newData.updated_at = new Date()
         await newData.save(); 
 
         let response={
@@ -136,8 +139,6 @@
       console.log(err)
       res.status(500).json({err:"KACIAN ERROR"})
     }
-  
-
   };
   
   module.exports = {

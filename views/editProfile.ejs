@@ -1,70 +1,130 @@
-
-
-<div class="container emp-profile">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="profile-head">
-                                    <h2 id="heading">
-                                        Edit Profiles
-                                    </h2>
-                                 
-                            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item">
-                               <hr>
-                             </li>
-                              
-                            </ul>
-                        </div>
+<form id="userForm" enctype="multipart/form-data" method="post">
+    <div class="col-md-12">
+        <div class="tab-content profile-tab" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            </div>
+            <div class="row my-3">
+                <div class="col-md-6">
+                    <label for="username">Username</label>
+                    <input class="form-control" type="text" name="username" id="username" autocomplete="username">
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-md-6">
+                    <label for="email">Email</label>
+                    <input class="form-control" type="email" name="email" id="email" value="" autocomplete="email">
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-md-6">
+                    <label for="password">Password</label>
+                    <div class="d-flex justify-content-between">
+                        <input class="form-control col-md-12" type="password" name="password" id="password" value="">
+                        <a href="/password" class="btn btn-warning col-md-2 mx-3">edit</a>
                     </div>
                 </div>
-                <div class="row">
-                 
-                <form action="/user/<%= user.user_id %>/update" id="userForm" method="post" enctype="multipart/form-data">
-                    <div class="col-md-12" >
-                        <div class="tab-content profile-tab" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                 </div>
-                                        <div class="row my-3">
-                                            <div class="col-md-6">
-                                                <label for="username">Username</label>
-                                                <input class="form-control" type="text" name="username" id="name" value="<%= user.username %>">
-                                            </div>
-                                        </div>
-                                        <div class="row my-3">
-                                            <div class="col-md-6">
-                                                <label for="email">Email</label>
-                                                <input class="form-control" type="email" name="email" id="email" value="<%= user.email %>">
-                                            </div>
-                                        </div>
-                                        <div class="row my-3">
-                                             <div class="col-md-6">
-                                                <label for="password">Password</label>
-                                                <div class="d-flex justify-content-between" >
-                                                    <input class="form-control col-md-12" type="password" name="password" id="password" readonly value="<%= user.password %>">
-                                                    <a href="/password" class="btn btn-warning col-md-2 mx-3" >edit</a>    
-                                                </div>
-                                              </div>   
-                                        </div>
-                                        <div class="row my-3">
-                                            <div class="col-md-6">
-                                                <label for="sign_img">sign_img</label>
-                                                <input class="form-control" type="file" name="active" id="active"value="server/public/images/<%= user.sign_img %>"">
-                                                <input class="form-control" type="text" name="active" id="active"value="/images/<%= user.sign_img %>"">
-                                                <img src="/images/<%= user.sign_img %>" alt="" width="200" height="200">
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <button type="submit" class="btn btn-danger">Save</button>
-                                            <a href="/users" class="btn btn-secondary">Kembali</a>
-                                        </div>
-                                
-                            </div>
-                             </div>
-                        </div>
-                    </form>
-                    </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-md-6">
+                    <label for="active">active</label>
+                    <input class="form-control" type="text" name="active" id="active">
                 </div>
-            </form>           
+            </div>
+            <div class="row my-3">
+                <div class="col-md-6">
+                    <label for="sign_img_input">sign_img</label>
+                    <input class="form-control" type="file" name="sign_img" id="sign_img_input">
+                    <br>
+                    <img id="sign_img_preview" src="" alt="" width="200" height="200">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-danger">Save</button>
+                <a href="/profile" class="btn btn-secondary">Kembali</a>
+            </div>
+
         </div>
-   
+    </div>
+</form>
+<script>
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+        window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+    }
+
+    const myHeaders = new Headers();
+    myHeaders.append("authorization", "Bearer " + token);
+
+    var userId = window.location.pathname.split("/")[2]; // Mendapatkan user_id dari URL
+
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch(`http://localhost:3000/user/${userId}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            // Mengisi nilai pada input formulir dengan data pengguna yang diperoleh
+
+            document.getElementById("username").value = result.username;
+            document.getElementById("email").value = result.email;
+            document.getElementById("password").value = result.password;
+            document.getElementById("active").value = result.active;
+            document.getElementById("sign_img_preview").src = `/public/images/${result.sign_img}`;
+            document.getElementById("userForm").action =`/user/${result.user_id}/update`;
+        })
+        .catch(error => console.log('error', error));
+
+    var fileInput = document.getElementById("sign_img_input");
+    var imagePreview = document.getElementById("sign_img_preview");
+
+    fileInput.addEventListener("change", function () {
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    const usernameUpdate = document.getElementById('username');
+    const emailUpdate = document.getElementById('email');
+    const passwordUpdate = document.getElementById('password');
+    const activeUpdate = document.getElementById("active");
+    const fileUpdate =  document.getElementById("sign_img_input");
+    document.getElementById("userForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formdata = new FormData();
+        formdata.append("username", usernameUpdate.value);
+        formdata.append("email", emailUpdate.value);
+        formdata.append("password", passwordUpdate.value);
+        formdata.append("active", activeUpdate.value);
+        formdata.append("sign_img", fileUpdate.files[0]);
+
+        var requestOptionsupdate = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:3000/user/${userId}/update`, requestOptionsupdate)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                // Tampilkan pesan berhasil jika diperlukan
+                alert("Data berhasil diperbarui");
+                // Redirect ke halaman profil
+                window.location.href = "/profile";
+            })
+            .catch(error => console.log('error', error));
+    });
+</script>

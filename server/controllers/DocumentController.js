@@ -25,7 +25,7 @@ const createDocument = async (req, res, next) => {
     let name = req.body.name;
     let filename = req.file.filename;
     let description = req.body.description;
-    let user_id = req.body.user_id
+    let user_id = req.user.user_id
     const createDocument = await Document.create({
       document_id: document_id,
       name: name,

@@ -9,7 +9,7 @@ dotenv.config();
 
 const generateToken = (user) => {
   return jwt.sign({ user_id: user.user_id, email: user.email }, process.env.SECRET_TOKEN, {
-    expiresIn: "1h",
+    expiresIn: "20m",
   });
 };
 
@@ -34,14 +34,13 @@ const login = async (req, res) => {
     }
   
     const token = generateToken(user);
-    req.session.token = token
-
     let response ={
       token : token,
       datetime :datetime,
       session : token
     }
-   
+    req.session.token = token;
+    req.session.save();
     res.setHeader('authorization',token)
     res.status(200).json({ response ,message:"login succes"});
   } catch (error) {
@@ -74,17 +73,29 @@ const getProfile = async (req, res) => {
   }
 };
 
+
 const logout = async (req, res) => {
-  try {
+  const token = req.headers.authorization || req.body.token;
+console.log(token)
+  // try {
+  //   // Mendapatkan token dari header atau body request
+  //   const token = req.headers.authorization || req.body.token;
 
-    // Jika token tidak ada, berarti pengguna belum login
+  //   // Mengecek apakah token sudah digunakan sebelumnya
+  //   if (usedTokens.includes(token)) {
+  //     return res.status(401).json({ message: "Token has already been invalidated" });
+  //   }
 
-    res.status(200).json({ message: "Logout success" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+  //   // Menandai token sebagai expired dan tambahkan ke daftar usedTokens
+  //   usedTokens.push(token);
+
+  //   res.status(200).json({ message: "Logout success" });
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(500).json({ message: "Internal Server Error" });
+  // }
 };
+
 
 module.exports = {
   login,
