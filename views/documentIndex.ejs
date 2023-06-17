@@ -4,13 +4,61 @@
     <a class="btn btn-primary" href="/dokumen/create">Add Doc</a>
   </div>
   <table class="table table-hover">
-    <tr>
-      <th>No</th>
-      <th>nama</th>
-      <th>nama file</th>
-      <th>description</th>
-      <th>Action</th>
-    </tr>
-   
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>nama</th>
+        <th>Pemilik</th>
+        <th>nama file</th>
+        <th>description</th>
+        <th>Action</th>
+      </tr>
+    </thead >
+    <tbody id="documentTableBody">
+
+    </tbody>
   </table>
 </section>
+<script>
+  const token = sessionStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+  }
+  var myHeaders = new Headers();
+  myHeaders.append("authorization", "Bearer " + token);
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://localhost:3000/document/index", requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      console.log(result);
+      const tableBody = document.getElementById("documentTableBody");
+      tableBody.innerHTML = "";
+
+      result.forEach(documents => { 
+        const row = document.createElement("tr")
+        row.innerHTML = `
+        <td>${documents.document_id}</td>
+        <td>${documents.name}</td>
+        <td>${documents.User.username}
+        <td>${documents.filename}</td>
+        <td>${documents.description}</td>
+   
+        <td>
+              <a href="/dokumen/${documents.document_id}" type="button" class="btn btn-primary">Detail</a>
+
+        </td>
+        `;
+        tableBody.appendChild(row)
+      });
+    })
+    .catch(error => console.log('error', error));
+
+    
+</script>

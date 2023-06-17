@@ -1,0 +1,83 @@
+<form id="deleteForm">
+    <div style="display: flex;">
+
+        <div>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title" id="names">name</h5>
+                    <p class="card-text"></p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" id="username">oleh: Gilang Kharisma</li>
+                    <li class="list-group-item" id="filename">Nama File</li>
+                </ul>
+                <div class="card-body">
+                    <li class="list-group-item" id="description">Description</li>
+                </div>
+                <a href="#" class="btn btn-warning" id="editRef">Edit</a>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+        <div style="margin-left: 100px;">
+            <div class="">
+
+                <div style=" height: 400px; width: 800px; border: solid;">
+                    <iframe id="document_preview" height="100%" width="100%" class="card-img-top"></iframe>
+                </div>
+                <a id="editDoc" class="btn btn-primary" style="margin:20px 0 20px 0;">Change Document</a>
+
+            </div>
+        </div>
+
+    </div>
+</form>
+<script>
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+        window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+    }
+    const myHeaders = new Headers()
+    myHeaders.append('authorization', 'Bearer ' + token)
+
+    let document_id = window.location.pathname.split("/")[2];
+
+    let requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    }
+
+    fetch(`http://localhost:3000/document/${document_id}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            document.getElementById("names").textContent = result.name;
+            document.getElementById("username").textContent = `oleh: ${result.User.username}`;
+            document.getElementById("filename").textContent = result.filename;
+            document.getElementById("description").textContent = result.description;
+            document.getElementById("document_preview").src = `/public/document/${result.filename}`;
+            document.getElementById("editRef").href = `/document/${result.document_id}`
+            document.getElementById("editDoc").href = `/fileDOc/${result.document_id}`
+        })
+        .catch(error => console.log('error', error));
+
+    document.getElementById("deleteForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var requestDelete = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:3000/document/${document_id}/delete`, requestDelete)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                alert("Data di hapus")
+                window.location.href = `/dokumen/index`
+            })
+            .catch(error => console.log('error', error));
+    })
+</script>

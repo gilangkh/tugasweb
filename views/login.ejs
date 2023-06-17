@@ -40,7 +40,7 @@
                 <!-- Email input -->
                 <div class="form-outline mb-4">
                   <label class="form-label" for="email">Email address</label>
-                  <input type="email" id="email" class="form-control" name="email" />
+                  <input type="email" id="email" class="form-control" name="email" autocomplete="email" />
                 </div>
 
                 <!-- Password input -->
@@ -102,7 +102,8 @@
   
           window.location.href = "/users?text=" + token; // Redirect to the target page if login is successful
         } else {
-          console.log("Login failed!"); // Display failure message to the console (optional)
+          alert("login gagal")
+          console.log(response.json()); // Display failure message to the console (optional)
         }
   
       } catch (error) {

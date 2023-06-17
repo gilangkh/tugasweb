@@ -1,0 +1,116 @@
+<div class="container emp-profile">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="profile-head">
+                <h2 id="heading">
+                    Edit Dokumen
+                </h2>
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <hr>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <form id="fileForm" enctype="multipart/form-data">
+            <div class="col-md-12">
+                <div class="tab-content profile-tab" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    </div>
+
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <label for="filename">Filename</label>
+                            <input class="form-control" type="file" name="filename" id="filename" value="">
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <iframe height="600px" width="800px" src="" frameborder="2" name="filename_preview"
+                                id="filename_preview"></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-danger">Save</button>
+                        <a href="" class="btn btn-secondary" id="editRef">Back</a>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+        alert("Login Terlebih Dahulu")
+        window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+    }
+    const myHeaders = new Headers()
+    myHeaders.append('authorization', 'Bearer ' + token)
+
+    const document_id = window.location.pathname.split("/")[2];
+
+    let requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    }
+
+    fetch(`http://localhost:3000/document/${document_id}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+
+            document.getElementById("filename_preview").src = `/public/document/${result.filename}`
+            document.getElementById("editRef").href=`/dokumen/${document_id}`
+
+        })
+        .catch(error => console.log('error', error));
+
+    let fileInput = document.getElementById("filename");
+    let docPreview = document.getElementById("filename_preview");
+
+    fileInput.addEventListener("change", function () {
+
+        let file = fileInput.files[0];
+        let reader = new FileReader();
+
+        reader.onload = function (e) {
+            docPreview.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    })
+
+    const fileForm = document.getElementById("fileForm")
+    const filename = document.getElementById("filename")
+
+    fileForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formdata = new FormData();
+        formdata.append("filename", fileInput.files[0]);
+
+        var requestfileUpdate = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:3000/fileDOc/${document_id}/update`, requestfileUpdate)
+            .then(response => response.json())
+            .then(result => {
+                
+            console.log(result)
+            alert("Data Berhasil ditambah");
+            window.location.href = `/dokumen/${document_id}`
+            
+            })
+            .catch(error => console.log('error', error));
+    })
+</script>

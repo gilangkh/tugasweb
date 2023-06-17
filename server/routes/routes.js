@@ -10,7 +10,7 @@ const router = express.Router();
 
 const multer = require("multer");
 const app = express();
-const path = require('path')
+const path = require('path');
 
 const imgStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -64,12 +64,12 @@ const uploadDoc = multer({
 router.post('/login',AuthController.login);
 router.post('/user/create',uploadUser.single('sign_img'), UserController.createUser);
 router.post('/logout',Middleware,AuthController.logout);
-
+router.post('/user/reset',UserController.resetPassword)
 // TEST-------------------------------------------------------------------------------
-
+router.use(Middleware)
 // -----------------------------------------------------------------------------------
 
-router.use(Middleware)
+router.post('/user/change',UserController.changePassword)
 
 // UserRouter
 
@@ -86,6 +86,7 @@ router.post('/document/create',uploadDoc.single('filename'),DocumentConrtoller.c
 router.get('/document/:document_id',DocumentConrtoller.getOneDocument);
 router.post('/document/:document_id/update',uploadDoc.single('filename'),DocumentConrtoller.updateDocument);
 router.post('/document/:document_id/delete',DocumentConrtoller.deleteDocument);
+router.post('/fileDoc/:document_id/update',uploadDoc.single('filename'),DocumentConrtoller.updateFileDocument);
 
 // Singnature Router
 

@@ -1,62 +1,104 @@
-
-
 <div class="container emp-profile">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="profile-head">
-                                    <h2 id="heading">
-                                        Edit Dokumen
-                                    </h2>
-                                 
-                            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item">
-                               <hr>
-                
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                 
-                <form action="/dokumen/<%= doc.document_id %>/update" id="userForm" method="post" enctype="multipart/form-data">
-                    <div class="col-md-12" >
-                        <div class="tab-content profile-tab" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                 </div>
-                                        
-                                        <div class="row my-3">
-                                            <div class="col-md-6">
-                                                <label for="name">name</label>
-                                                <input class="form-control" type="text" name="name" id="name" value="<%= doc.name %>">
-                                            </div>
-                                        </div>
-                                        <div class="row my-3">
-                                             <div class="col-md-6">
-                                                <label for="filename">filename</label>
-                                                <div class="d-flex justify-content-between" >
-                                                    <input class="form-control col-md-12" type="file" name="filename" id="filename" value="<%= doc.filename %>">
-                                               </div>
-                                              </div>   
-                                        </div>
-                                        <div class="row my-3">
-                                            <div class="col-md-6">
-                                                <label for="description">description</label>
-                                                <input class="form-control" type="text" name="description" id="description"value="<%= doc.description %>">
-                                            </div>
-                                        </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="profile-head">
+                <h2 id="heading">
+                    Edit Dokumen
+                </h2>
 
-                                        <div>
-                                            <button type="submit" class="btn btn-danger">Save</button>
-                                            <a href="/dokumen/index" class="btn btn-secondary">Kembali</a>
-                                        </div>
-                                
-                            </div>
-                             </div>
-                        </div>
-                    </form>
-                    
-                    </div>
-                </div>
-            </form>           
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <hr>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </div>
+    <div class="row">
+        <form id="docForm" enctype="multipart/form-data">
+            <div class="col-md-12">
+                <div class="tab-content profile-tab" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    </div>
+
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <label for="names">name</label>
+                            <input class="form-control" type="text" name="names" id="names" value="">
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <label for="description">description</label>
+                            <input class="form-control" type="text" name="description" id="description" value="">
+                        </div>
+                    </div>
+                      <div>
+                        <button type="submit" class="btn btn-danger">Save</button>
+                        <a href="" class="btn btn-secondary" id="editRef">Back</a>
+                     </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+        window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+    }
+    const myHeaders = new Headers()
+    myHeaders.append('authorization', 'Bearer ' + token)
+
+    let document_id = window.location.pathname.split("/")[2];
+
+    let requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    }
+
+    fetch(`http://localhost:3000/document/${document_id}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+
+            document.getElementById("names").value = result.name
+            document.getElementById("description").value = result.description
+            document.getElementById("filename_preview").src =`/public/document/${result.filename}`
+            document.getElementById("editRef").href=`/dokumen/${result.document_id}`
+
+        })
+        .catch(error=>console.log('error',error));
+    
+    const docForm = document.getElementById("docForm")
+    const names = document.getElementById("names")
+    const description = document.getElementById("description")
    
-        
+    docForm.addEventListener("submit", function(event){
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append("name",names.value)
+        formData.append("description",description.value)
+       
+        let requestUpdate = {
+        method:'POST',
+        headers : myHeaders,
+        body:formData
+        };
+
+        fetch(`http://localhost:3000/document/${document_id}/update`,requestUpdate)
+        .then(response => response.json())
+        .then(result=>{
+            console.log(result)
+            alert("data di ubah")
+
+            window.location.href = `/dokumen/${document_id}`;
+        })
+        .catch(error => console.log('error',error))
+    })
+
+</script>

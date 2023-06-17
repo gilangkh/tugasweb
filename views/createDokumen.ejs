@@ -1,68 +1,101 @@
-
-
 <div class="container emp-profile">
     <div class="row">
-       
+
         <div class="col-md-12">
             <div class="profile-head">
-                        <h2 id="heading">
-                            CREATE Dokumen
-                        </h2>
-                     
+                <h2 id="heading">
+                    CREATE Dokumen
+                </h2>
+
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
-                   <hr>
-                 </li>
-                  
+                        <hr>
+                    </li>
+
                 </ul>
             </div>
         </div>
     </div>
     <div class="row">
-     
-    <form action="/dokumen/create" id="userForm" method="post" enctype="multipart/form-data">
-        <div class="col-md-12" >
-            <div class="tab-content profile-tab" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                     </div>
-                            
-                            <div class="row my-3">
-                                <div class="col-md-6">
-                                    <label for="name">name</label>
-                                    <input class="form-control" type="text" name="name" id="name" value="">
-                                </div>
-                            </div>
-                             <div class="row my-3">
-                                <div class="col-md-6">
-                                    <label for="user_id">user_id</label>
-                                    <input class="form-control" type="text" name="user_id" id="user_id" value="">
-                                </div>
-                            </div>
-                            <div class="row my-3">
-                                 <div class="col-md-6">
-                                    <label for="filename">filename</label>
-                                    <div class="d-flex justify-content-between" >
-                                        <input class="form-control col-md-12" type="file" name="filename" id="filename" value="">
-                                   </div>
-                                  </div>   
-                            </div>
-                            <div class="row my-3">
-                                <div class="col-md-6">
-                                    <label for="description">description</label>
-                                    <input class="form-control" type="text" name="description" id="description"value="">
-                                </div>
-                            </div>
 
-                            <div>
-                                <button type="submit" class="btn btn-danger">Save</button>
-                                <a href="/dokumen/index" class="btn btn-secondary">Kembali</a>
+        <form id="docForm" enctype="multipart/form-data">
+            <div class="col-md-12">
+                <div class="tab-content profile-tab" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    </div>
+
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <label for="names">name</label>
+                            <input class="form-control" type="text" name="names" id="names" value="">
+                        </div>
+                    </div>
+
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <label for="filename">filename</label>
+                            <div class="d-flex justify-content-between">
+                                <input class="form-control col-md-12" type="file" name="filename" id="filename"
+                                    value="">
                             </div>
-                    
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <label for="description">description</label>
+                            <input class="form-control" type="text" name="description" id="description" value="">
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-danger">Save</button>
+                        <a href="/dokumen/index" class="btn btn-secondary">Kembali</a>
+                    </div>
+
                 </div>
-                 </div>
             </div>
         </form>
-        </div>
     </div>
-</form>           
 </div>
+
+
+<script>
+  const token = sessionStorage.getItem("token");
+    
+    if (!token) {
+      window.location.href = "/login";
+    }
+    
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+
+    const docForm = document.getElementById("docForm");
+    const nama = document.getElementById("names");
+    const fileInput = document.getElementById("filename");
+    const description = document.getElementById("description");
+
+    docForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        var formdata = new FormData();
+        formdata.append("name", nama.value);
+        formdata.append("filename", fileInput.files[0]);
+        formdata.append("description", description.value);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow'
+        };
+
+        fetch("http://localhost:3000/document/create", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                console.log("ini pesan"+result.message);
+                window.location.href ="/dokumen/index"
+            })
+            .catch(error => console.log('error', error));
+    });
+</script>

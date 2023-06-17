@@ -105,10 +105,8 @@
         const formdata = new FormData();
         formdata.append("username", usernameUpdate.value);
         formdata.append("email", emailUpdate.value);
-        formdata.append("password", passwordUpdate.value);
         formdata.append("active", activeUpdate.value);
-        formdata.append("sign_img", fileUpdate.files[0]);
-
+        
         var requestOptionsupdate = {
             method: 'POST',
             headers: myHeaders,
@@ -121,7 +119,7 @@
             .then(result => {
                 console.log(result);
                 // Tampilkan pesan berhasil jika diperlukan
-                alert("Data berhasil diperbarui");
+                alert("Data di ubah ");
                 // Redirect ke halaman profil
                 window.location.href = "/profile";
             })

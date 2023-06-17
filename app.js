@@ -17,6 +17,7 @@ const fs = require("fs");
 
 const session = require('express-session');
 const authenticateToken = require("./server/middleware/AuthToken");
+const { default: jwtDecode } = require("jwt-decode");
 
 app.use('/static', express.static('public', { 
   setHeaders: (res, path) => {
@@ -30,7 +31,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
 app.use('/public', express.static(path.join(process.cwd(), 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -154,153 +154,53 @@ app.post("/user/:user_id/update", uploadUser.single("sign_img"), (req, res) => {
   res.json({ message: "File berhasil diunggah" });
 });
 
+
+app.get('/uset/editPassword',(req,res)=>{
+  res.render("editPassword", {
+    title: "Edit Password Dokumen",
+    layout: "./layout/layout.ejs",
+  });
+})
 /* =================================================================================*/
 /*                                        DOKUMENT                                  */
 /* =================================================================================*/
 
-// list dokumen
+// -----------list dokumen-----------------
 app.get("/dokumen/index", (req, res) => {
-  let token = req.headers["cookie"]
-  let config = {
-    method: 'get',
-    maxBodyLength: Infinity,
-    url: 'http://localhost:3000/document/index',
-    headers: { 
-      "Content-Type": "application/json",
-      'authorization' :'Bearers '+token
-    }
-  };
-  
-  config.withCredentials=true;
-  axios.request(config)
-  .then((response) => {
-    const key = Object.keys(req.headers)
-    console.log(JSON.stringify("dokumen respons sesi = " +key));
-    console.log("ini tokens = "+token)
-    res.render("documentIndex",{
-      title :"list dokumen",
-      layout : "./layout/main-layout"
-    })
-  })
-  .catch((error) => {
-    console.log(error);
+  res.render("documentIndex", {
+    title: "List Dokumen",
+    layout: "./layout/layout.ejs",
   });
 });
 
-//create dokumen
+//-----------create dokumen--------------
 app.get("/dokumen/create", (req, res) => {
   res.render("createDokumen", {
     title: "createDokumen",
-    layout: "./layout/main-layout",
+    layout: "./layout/layout.ejs",
   });
 });
-// --------------
-app.post("/dokumen/create", uploadDoc.single("filename"), (req, res) => {
-  let name = req.body.name;
-  let filename = req.file.filename;
-  let user_id = req.body.user_id;
-  let description = req.body.description;
-  let data = new FormData();
-  data.append("name", name);
-  data.append("filename", fs.createReadStream("./public/document/" + filename));
-  data.append("description", description);
-  data.append("user_id", user_id);
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "http://localhost:3000/document/create",
-    headers: {
-      "Content-Type": "application/json, multipart/form-data",
-        ...data.getHeaders(),
-    },
-    data: data,
-  };
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      res.status(200).redirect("/dokumen/index");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
-
-// Edit Dokumen
-
-app.get("/dokumen/:document_id", (req, res) => {
-  let document_id = req.params.document_id;
-  const url = "http://localhost:3000/document/" + document_id;
-  axios.get(url).then(function (response) {
-    const doc = response.data;
-    res.render("editDokumen", {
-      title: "Edit Dokumen",
-      layout: "./layout/main-layout",
-      doc: doc,
-    });
+// -------------- Edit Dokumen---------
+app.get("/document/:document_id", (req, res) => {
+  res.render("editDokumen", {
+    title: "Edit Dokumen",
+    layout: "./layout/layout",
   });
 });
 
-app.post(
-  "/dokumen/:document_id/update",
-  uploadDoc.single("filename"),
-  (req, res) => {
-    let name = req.body.name;
-    let filename = req.file.filename;
-    let description = req.body.description;
 
-    let data = new FormData();
-    data.append("name", name);
-    data.append(
-      "filename",
-      fs.createReadStream("./public/document/" + filename)
-    );
-    data.append("description", description);
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "http://localhost:3000/document/2bc5f9d0-355e-460b-b725-4f2820d93f13/update",
-      headers: {
-        "Content-Type": "application/json",
-        ...data.getHeaders(),
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-        res.status(200).redirect("back");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-);
-
-app.post("/dokumen/:document_id/delete", (req, res) => {
-  let document_id = req.params.document_id;
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "http://localhost:3000/document/" + document_id + "/delete",
-    data: data,
-  };
-
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      res.status(200).redirect("back");
-    })
-    .catch((error) => {
-      config.log(error);
-    });
-});
+app.get("/dokumen/:dokument",(req,res)=>{
+  res.render("detail", {
+    title: "Edit Dokumen",
+    layout: "./layout/layout",
+  });
+})
+app.get("/fileDoc/:document_id",(req,res)=>{
+  res.render("editFIle", {
+    title: "Edit Dokumen",
+    layout: "./layout/layout",
+  });
+})
 
 
 /*================================================================================== */

@@ -60,24 +60,20 @@
   const updateUser = async (req, res) => {
     const user_id=req.params.user_id;
     const data = req.body;
-    const hashedPassword = await bcrypt.hash(data.password,10)
-
  
     try{
       const newData = await User.findOne({where:{user_id:user_id}})
       if(!newData){
         console.log("User Not Found");
       }
-      const oldSign = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\images\\', newData.sign_img)
-      fs.unlinkSync(oldSign)
+      // const oldSign = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\images\\', newData.sign_img)
+      // fs.unlinkSync(oldSign)
   
       if(newData)
       {
         newData.username=data.username,
         newData.email =data.email,
-        newData.password = hashedPassword,
-        newData.active = data.active,
-        newData.sign_img = req.file.filename
+         newData.active = data.active,
         newData.updated_at = new Date()
         await newData.save(); 
 
@@ -140,11 +136,61 @@
       res.status(500).json({err:"KACIAN ERROR"})
     }
   };
+  const changePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
   
+    try {
+      const user = await User.findOne({ where: { user_id: req.user.user_id } });
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+  
+      if (!passwordMatch) {
+        return res.status(401).json({ message: "Old password is incorrect" });
+      }
+  
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+  
+      user.password = hashedPassword;
+      await user.save();
+  
+      res.status(200).json({ message: "Password changed successfully" });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: "An error occurred while changing password" });
+    }
+  };
+
+  const resetPassword = async (req, res) => {
+    const { email, newPassword } = req.body;
+  
+    try {
+      const user = await User.findOne({ where: { email: email } });
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+  
+      user.password = hashedPassword;
+      await user.save();
+  
+      res.status(200).json({ message: "Password reset successful" });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: "An error occurred while resetting password" });
+    }
+  };
   module.exports = {
     getAllUser,
     createUser,
     updateUser,
     deleteUser,
-    getOneUser
+    getOneUser,
+    changePassword,
+    resetPassword
   };
