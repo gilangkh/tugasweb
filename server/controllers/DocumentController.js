@@ -16,8 +16,10 @@ const getAllDocuments = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ['username']
-        }
+          attributes: ['username'],
+          where:{user_id:req.user.user_id}
+        },
+        
       ]
     });
 

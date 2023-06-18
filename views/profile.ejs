@@ -19,7 +19,9 @@
         </div>
         <div class="col-md-2">
           <a id="editProfileBtn" class="btn btn-secondary" name="btnAddMore" value="Edit Profile">Edit Profile</a>
-        </div>
+          <a id="editPassword" class="btn btn-primary" name="btnAddMore" value="Edit Profile">Edit Password</a>
+       </div>
+     
       </div>
       <div class="row">
         <div class="col-md-4">
@@ -98,7 +100,9 @@
             profileNameElement.innerText = `Halo ${user.username}`;
 
             const editProfileBtn = document.getElementById("editProfileBtn");
+            const editPasswordBtn = document.getElementById("editPassword");
             editProfileBtn.href = `/user/${user.user_id}`;
+            editPasswordBtn.href = "/reset?message="+user.user_id
           })
           .catch(error => console.log('error', error));
       }

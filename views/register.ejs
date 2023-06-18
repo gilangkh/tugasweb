@@ -125,9 +125,19 @@
         const data = await response.json();
         console.log(data);
         // Redirect to login page or show success message
+        if(data.error)
+        {
+          alert("daftar gagal")
+        }else
+        {
+          alert("daftar berhasil")
         window.location.href = '/login';
+        }
+       
       } catch (error) {
         console.error(error);
+        alert("Daftar Gagal")
+        window.location.href = "/register"
         // Display error message to the user
       }
     });

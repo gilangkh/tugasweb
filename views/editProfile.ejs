@@ -15,27 +15,11 @@
                     <input class="form-control" type="email" name="email" id="email" value="" autocomplete="email">
                 </div>
             </div>
-            <div class="row my-3">
-                <div class="col-md-6">
-                    <label for="password">Password</label>
-                    <div class="d-flex justify-content-between">
-                        <input class="form-control col-md-12" type="password" name="password" id="password" value="">
-                        <a href="/password" class="btn btn-warning col-md-2 mx-3">edit</a>
-                    </div>
-                </div>
-            </div>
+
             <div class="row my-3">
                 <div class="col-md-6">
                     <label for="active">active</label>
                     <input class="form-control" type="text" name="active" id="active">
-                </div>
-            </div>
-            <div class="row my-3">
-                <div class="col-md-6">
-                    <label for="sign_img_input">sign_img</label>
-                    <input class="form-control" type="file" name="sign_img" id="sign_img_input">
-                    <br>
-                    <img id="sign_img_preview" src="" alt="" width="200" height="200">
                 </div>
             </div>
 
@@ -73,32 +57,13 @@
 
             document.getElementById("username").value = result.username;
             document.getElementById("email").value = result.email;
-            document.getElementById("password").value = result.password;
             document.getElementById("active").value = result.active;
-            document.getElementById("sign_img_preview").src = `/public/images/${result.sign_img}`;
-            document.getElementById("userForm").action =`/user/${result.user_id}/update`;
         })
         .catch(error => console.log('error', error));
 
-    var fileInput = document.getElementById("sign_img_input");
-    var imagePreview = document.getElementById("sign_img_preview");
-
-    fileInput.addEventListener("change", function () {
-        var file = fileInput.files[0];
-        var reader = new FileReader();
-
-        reader.onload = function (e) {
-            imagePreview.src = e.target.result;
-        };
-
-        reader.readAsDataURL(file);
-    });
-
     const usernameUpdate = document.getElementById('username');
     const emailUpdate = document.getElementById('email');
-    const passwordUpdate = document.getElementById('password');
     const activeUpdate = document.getElementById("active");
-    const fileUpdate =  document.getElementById("sign_img_input");
     document.getElementById("userForm").addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -106,7 +71,8 @@
         formdata.append("username", usernameUpdate.value);
         formdata.append("email", emailUpdate.value);
         formdata.append("active", activeUpdate.value);
-        
+
+
         var requestOptionsupdate = {
             method: 'POST',
             headers: myHeaders,

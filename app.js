@@ -150,17 +150,20 @@ app.get("/user/:user_id", (req, res) => {
     layout: "./layout/layout.ejs",
   });
 });
-app.post("/user/:user_id/update", uploadUser.single("sign_img"), (req, res) => {
-  res.json({ message: "File berhasil diunggah" });
-});
 
-
-app.get('/uset/editPassword',(req,res)=>{
+app.get('/change/:user_id',(req,res)=>{
   res.render("editPassword", {
     title: "Edit Password Dokumen",
     layout: "./layout/layout.ejs",
   });
 })
+
+app.get("/reset", (req, res) => {
+  res.render("reset", {
+    title: "profile",
+    layout: false,
+  });
+});
 /* =================================================================================*/
 /*                                        DOKUMENT                                  */
 /* =================================================================================*/

@@ -18,7 +18,7 @@ const authenticateToken =(req, res, next)=> {
         if (err) {
         return res.json("Middleware salah")
         }
-        console.log("ini token di middleware = "+"-"+user.user_id)
+        console.log("AMAN ini token di middleware = "+"-"+user.user_id)
         req.user = user
         
         next()

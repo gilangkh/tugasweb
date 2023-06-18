@@ -65,11 +65,12 @@ router.post('/login',AuthController.login);
 router.post('/user/create',uploadUser.single('sign_img'), UserController.createUser);
 router.post('/logout',Middleware,AuthController.logout);
 router.post('/user/reset',UserController.resetPassword)
+router.post('/user/password/',UserController.resetPassword)
 // TEST-------------------------------------------------------------------------------
 router.use(Middleware)
 // -----------------------------------------------------------------------------------
 
-router.post('/user/change',UserController.changePassword)
+router.post('/change/:user_id/update',UserController.changePassword)
 
 // UserRouter
 
