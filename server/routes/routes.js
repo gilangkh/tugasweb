@@ -93,12 +93,21 @@ router.post('/fileDoc/:document_id/update',uploadDoc.single('filename'),Document
 
 router.get('/signature/index',SignatureController.getAllSignature)
 router.post('/signature/create',SignatureController.createSignature)
-router.get('/signature/:user_id/:document_id',SignatureController.getOneSignature)
-router.post('/signature/:user_id/:document_id/update',SignatureController.updateSignature)
-router.post('/signature/:user_id/:document_id/delete',SignatureController.deleteSignature)
+router.get('/signature/:document_id/:user_id',SignatureController.getOneSignature)
+router.post('/signature/:document_id/update',SignatureController.updateSignature)
+router.post('/signature/:document_id/delete',SignatureController.deleteSignature)
+
+// ---V1
+
+router.get("/signature/userIndex",SignatureController.getAllUserSignature)
 
 // ---V2
-router.post('/sign',SignatureController.signDoc)
+router.post('/sign/:document_id/:user_id',SignatureController.signDoc)
+router.get('/sign/waiting',SignatureController.reqSign)
+router.get('/sign/signed',SignatureController.resSign)
+router.get('/sign/rejected',SignatureController.decSign)
+
+router.post('/decline/:document_id/:user_id',SignatureController.decSignDoc)
 
 // export
 module.exports = router;

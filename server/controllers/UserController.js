@@ -20,16 +20,16 @@ const getAllUser = async (req, res) => {
 // CREATE
 const createUser = async (req, res, next) => {
   try {
-    // let user_id = req.body.user_id;
     let username = req.body.username;
     let email = req.body.email;
     let password = req.body.password;
     let sign_img = req.file.filename;
 
+    // Check if the email already exists in the database
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const createUser = await User.create({
-      // user_id: user_id,
+    const newUser = await User.create({
       username: username,
       email: email,
       password: hashedPassword,
@@ -38,16 +38,18 @@ const createUser = async (req, res, next) => {
     });
 
     let response = {
-      message: "data berhasil ditambahkan",
-      data: createUser,
+      message: "Data berhasil ditambahkan",
+      data: newUser,
     };
     console.log(response);
     return res.status(200).json(response);
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "data gagal ditambahkan" + err });
+    return res.status(500).json({ error: "Data gagal ditambahkan" + err });
   }
 };
+
+
 
 // UPDATE
 

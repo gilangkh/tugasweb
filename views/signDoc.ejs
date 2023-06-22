@@ -1,0 +1,137 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="profile-head">
+                <h2 class="heading">
+                    Sign Document
+                </h2>
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <hr>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card" style="width: 50rem; height: 25re;border: solid;">
+        <iframe style="height: 35rem;"  frameborder="10"
+            id="sign_view"></iframe>
+        <div class="card-body border border-5 border-black">
+            <h5 class="card-title" id="names">Surat Keterang Pomda</h5>
+            <p class="card-text">Oleh Gilang Kharisma</p>
+
+
+            <button type="submit" class="btn btn-success" onclick="signDoc()">Tandatangani</button>
+            <button type="submit" class="btn btn-danger" onclick="decSignDoc()">Tolak</button>
+            <a href="/signature" class="btn btn-secondary">Kembali</a>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+        alert("Login Terlebih Dahulu")
+        window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+    }
+
+    const myHeaders = new Headers()
+    myHeaders.append('authorization', 'Bearer ' + token)
+
+    const document_id = window.location.pathname.split("/")[2];
+    const user_id = window.location.pathname.split("/")[3];
+    console.log(document_id)
+    console.log(user_id)
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch(`http://localhost:3000/signature/${document_id}/${user_id}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            const pdfView = document.getElementById("sign_view")
+            pdfView.src= `/public/document/${result.Document.filename}`
+            names.innerText = "sign"
+        })
+        .catch(error => console.log('error', error));
+
+
+
+    function signDoc() {
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            alert("Login Terlebih Dahulu")
+            window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+        }
+        const document_id = window.location.pathname.split("/")[2];
+        const user_id = window.location.pathname.split("/")[3];
+        const myHeaders = new Headers()
+        myHeaders.append('authorization', 'Bearer ' + token)
+
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:3000/sign/${document_id}/${user_id}`, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                if(result.message!="Document berhasil ditandatangani")
+                {
+                 console.log(result)
+                 alert("bersil menanda tangani")
+                 window.location.href="/signature"
+                }
+                else{
+                alert("Berhasil Menandatangani") 
+                window.location.href="/signature"  
+                } 
+            })
+
+            .catch(error => console.log('error', error));
+
+    }
+
+    function decSignDoc() {
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            alert("Login Terlebih Dahulu")
+            window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+        }
+        const myHeaders = new Headers()
+        myHeaders.append('authorization', 'Bearer ' + token);
+
+        const document_id = window.location.pathname.split("/")[2];
+        const user_id = window.location.pathname.split("/")[3];
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:3000/decline/${document_id}/${user_id}`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                if(result.message!="permintaan berhasil di tolak")
+                {
+                 console.log(result.message)
+                 alert(result.message)
+                 window.location.href="/signature"
+                }
+                else{
+                alert("Berhasil Menolak") 
+                window.location.href="/signature"  
+                }    
+            })
+            .catch(error => console.log('error', error));
+    }
+</script>

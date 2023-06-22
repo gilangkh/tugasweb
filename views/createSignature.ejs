@@ -1,0 +1,76 @@
+<div class="content">
+    <div style="padding-right: 100px;">
+      <div class="">
+        <h1 id="heading">Singnature</h1>
+      </div>
+      <div class="">
+        <span id="heading2">Your Documents</span>
+      </div>
+      <hr>
+  
+      <div>
+        <a class="btn btn-primary" href="signature/create">Ajukan Signature</a>
+      </div>
+      <div>
+        <br>
+      </div>
+      <table class="table table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Nama Surat</th>
+            <th scope="col">Document</th>
+            <th scope="col">Tujuan</th>
+            <th scope="col">Status</th>
+            <th scope="col">action</th>
+  
+          </tr>
+        </thead>
+        <tbody id="signBody">
+          <!-- list pengajuan -->
+  
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    const token = sessionStorage.getItem("token");
+  
+    if (!token) {
+      window.location.href = "/login"; // Redirect to the login page if token doesn't exist
+    }
+    var myHeaders = new Headers();
+    myHeaders.append("authorization", "Bearer " + token);
+  
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+  
+    fetch(`http://localhost:3000/signature/index`, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        const tbody = document.getElementById("signBody")
+        tbody.innerHTML = ''
+        
+        data.forEach(sign => {
+  
+          console.log(sign.document_id)
+          const row = document.createElement("tr")
+          row.innerHTML = `    
+              <td>1</td>
+              <td>${sign.Document.name}</td>
+              <td>${sign.Document.filename}</td>
+               <td> ${sign.User.username}</td>
+              <td>${sign.status}</td>
+              <td>
+                <a href="signDoc/${sign.document_id}/${sign.user_id}" type="button" class="btn btn-primary">Detail</a>
+              </td>
+                `;
+          tbody.appendChild(row)
+        });
+      })
+      .catch(error => console.log('error', error));
+  </script>

@@ -207,48 +207,79 @@ app.get("/fileDoc/:document_id",(req,res)=>{
 
 
 /*================================================================================== */
+/*                                    SIGNATURE                                      */
+/* ================================================================================= */
+
+// List Signature
+app.get("/mengajukan", (req, res) => {
+  res.render("mengajukan", {
+    title: "mengajukan",
+    layout: "./layout/layout",
+  });
+})
+
+app.get("/diajukan", (req, res) => {
+  res.render("diajukan", {
+    title: "Dokumen Diajukan",
+    layout: "./layout/layout",
+  });
+})
+// Create Sinature
+  app.get("/signature/create", (req, res) => {
+    res.render("createSignature", {
+      title: "Create Pengajuan",
+      layout: "./layout/layout",
+    });
+  });
+
+  // Sign Doc
+  app.get("/SignDoc/:document_id/:user_id", (req, res) => {
+    res.render("signDoc", {
+      title: "Sign Dokumen",
+      layout: "./layout/layout",
+    });
+  });
+
+
+  
+/*================================================================================== */
 /*                                       TEST                                        */
 /* ================================================================================= */
-app.get("/dokumen", (req, res) => {
-  res.render("document", {
-    title: "Dokumen",
-    layout: "./layout/main-layout",
-  });
-});
+
 app.get("/index", (req, res) => {
   res.render("nav", {
     title: "Home",
-    layout: "./layout/main-layout",
+    layout: "./layout/layout",
   });
 });
 app.get("/sendsign", (req, res) => {
   res.render("sendsign", {
     title: "SendSign",
-    layout: "./layout/main-layout",
+    layout: "./layout/layout",
   });
 });
 app.get("/sign", (req, res) => {
   res.render("Sign", {
     title: "Sign",
-    layout: "./layout/main-layout",
+    layout: "./layout/layout",
   });
 });
 app.get("/tview", (req, res) => {
   res.render("template-view", {
     title: "SendSign",
-    layout: "./layout/main-layout",
+    layout: "./layout/layout",
   });
 });
 app.get("/template", (req, res) => {
   res.render("template", {
     title: "template    ",
-    layout: "./layout/main-layout",
+    layout: "./layout/layout",
   });
 });
 app.get("/signers", (req, res) => {
   res.render("signers", {
     title: "Signer  ",
-    layout: "./layout/main-layout",
+    layout: "./layout/layout",
   });
 });
 /*================================================================================== */

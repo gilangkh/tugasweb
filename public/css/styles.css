@@ -161,7 +161,7 @@ padding:277px 308px 234px 308px;
 #icon-mark{
 
 }
-#value{
+.value{
 
 
 font-family: 'Montserrat';
@@ -174,7 +174,7 @@ line-height: 49px;
 
 color: #FFFFFF;
 }
-#mark2{
+.mark2{
 
   font-family: 'Montserrat';
   font-style: normal;
