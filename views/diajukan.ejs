@@ -27,10 +27,6 @@
       <span id="heading2">Your Documents</span>
     </div>
     <hr>
-
-    <div>
-      <a class="btn btn-primary" href="signature/create">Ajukan Signature</a>
-    </div>
     <div>
       <br>
     </div>
@@ -40,7 +36,7 @@
           <th scope="col">No</th>
           <th scope="col">Nama Surat</th>
           <th scope="col">Document</th>
-          <th scope="col">Tujuan</th>
+          <th scope="col">Pengaju</th>
           <th scope="col">Status</th>
           <th scope="col">action</th>
 
@@ -83,7 +79,7 @@
               <td>1</td>
               <td>${sign.Document.name}</td>
               <td>${sign.Document.filename}</td>
-               <td> ${sign.User.username}</td>
+               <td> ${sign.Document.User.username}</td>
               <td>${sign.status}</td>
               <td>
                 <a href="signDoc/${sign.document_id}/${sign.user_id}" type="button" class="btn btn-primary">Detail</a>
@@ -98,13 +94,13 @@
     .then(response => response.json())
     .then(result => {
       console.log(result)
-      document.getElementById("diajukan").innerText= result
+      document.getElementById("diajukan").innerText = result
     })
     .catch(error => console.log('error', error));
 
   fetch("http://localhost:3000/sign/signed", requestOptions)
     .then(response => response.json())
-    .then(result =>{ 
+    .then(result => {
       console.log(result)
       document.getElementById("diterima").innerText = result
     })
@@ -117,4 +113,23 @@
       document.getElementById("ditolak").innerText = result
     })
     .catch(error => console.log('error', error));
+
+  // Mendapatkan parameter URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const flashMessage = urlParams.get('flashMessage');
+
+  // Menampilkan notifikasi flash message jika ada
+  if (flashMessage) {
+    const notification = document.createElement('div');
+    notification.className = 'flash-message';
+    notification.innerText = flashMessage;
+
+    // Menambahkan notifikasi ke dalam dokumen
+    document.body.appendChild(notification);
+
+    // Menghapus notifikasi setelah beberapa detik
+    setTimeout(() => {
+      notification.remove();
+    }, 5000); // Menghilangkan notifikasi setelah 5 detik
+  }
 </script>

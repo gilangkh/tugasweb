@@ -20,6 +20,10 @@ const getAllSignature = async (req, res) => {
         {
           model: Document,
           attributes: ["name", "filename", "user_id"],
+          include :[{
+            model:User,
+            attributes:["username"]
+          }]
         },
       ],
       where: {
@@ -35,11 +39,7 @@ const getAllSignature = async (req, res) => {
 const createSignature = async (req, res, next) => {
   try {
     const { user_id, document_id, jabatan } = req.body;
-    const existingSignature = await Signature.findOne({ document_id });
-    if (existingSignature) {
-      return res.status(400).json({ error: "Dokumen dengan ID yang sama sudah ada" });
-    }
-
+    
     const createUser = await Signature.create({
       user_id: user_id,
       document_id: document_id,
@@ -51,11 +51,12 @@ const createSignature = async (req, res, next) => {
     });
 
     let response = {
-      message: "data berhasil ditambahkan",
+      message: "Dokumen berhasil di ajukan",
       data: createUser,
     };
     console.log(response);
     return res.status(200).json(response);
+  
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "data gagal ditambahkan" + err });
@@ -225,9 +226,9 @@ const signDoc = async (req, res) => {
 
 const reqSign = async (req,res) => {
   try {
+    const user_id = req.user.user_id
     const count = await Signature.count({
-      user_id : req.user.user_id,
-      where: { status: "diajukan" },
+      where: { status: "diajukan",user_id:user_id },
     });
     console.log("Jumlah signature dengan status 'diajukan':", count);
     res.status(200).json(count)
@@ -237,9 +238,10 @@ const reqSign = async (req,res) => {
 };
 const resSign = async (req,res) => {
   try {
+    
+    const user_id = req.user.user_id
     const count = await Signature.count({
-      user_id : req.user.user_id,
-      where: { status: "ditandatangani" },
+      where: { status: "ditandatangani",user_id:user_id },
     });
     console.log("Jumlah signature dengan status 'diajukan':", count);
     res.status(200).json(count)
@@ -249,6 +251,8 @@ const resSign = async (req,res) => {
 };
 const decSign = async (req,res) => {
   try {
+    
+    const user_id = req.user.user_id
     const count = await Signature.count({
       where: { 
         user_id : req.user.user_id,

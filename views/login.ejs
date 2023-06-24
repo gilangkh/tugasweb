@@ -100,7 +100,7 @@
           sessionStorage.setItem("token", token);
           requestOptions.headers["authorization"] = `${token}`;
   
-          window.location.href = "/users?text=" + token; // Redirect to the target page if login is successful
+          window.location.href = "/diajukan?text=" + token; // Redirect to the target page if login is successful
         } else {
           alert("login gagal")
           console.log(response.json()); // Display failure message to the console (optional)

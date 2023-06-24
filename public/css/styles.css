@@ -205,3 +205,16 @@ color: #FFFFFF;
 #pdl{
   padding-left: 10px;
 }
+
+.flash-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background-color: #f8f8f8;
+  color: #333;
+  font-size: 14px;
+  text-align: center;
+  z-index: 9999;
+}

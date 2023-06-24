@@ -1,23 +1,17 @@
 /** @format */
 
 const express = require("express");
-const axios = require('axios');
 const bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
 const mysql = require("mysql2");
 const expressLayouts = require("express-ejs-layouts");
-const FormData = require("form-data");
-const multer = require("multer");
 const Router = require('./routes/routes')
-const data = new FormData();
 const path = require("path");
 const cors = require("cors");
-const fs = require("fs");
+
 
 const session = require('express-session');
-const authenticateToken = require("./server/middleware/AuthToken");
-const { default: jwtDecode } = require("jwt-decode");
 
 app.use('/static', express.static('public', { 
   setHeaders: (res, path) => {
@@ -42,60 +36,6 @@ app.use(cors({
 }));
 app.use("/",Router)
 
-
-
-const imgStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./public/images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, new Date().getTime() + "-" + file.originalname);
-  },
-});
-
-
-const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./public/document");
-  },
-  filename: (req, file, cb) => {
-    cb(null, new Date().getTime() + "-" + file.originalname);
-  },
-});
-
-
-const userFilter = (req, file, cb) => {
-  if (
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
-  ) {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};  
-
-
-const docFilter = (req, file, cb) => {
-  if (
-    file.mimetype === "application/msword" ||
-    file.mimetype === "application/pdf"
-  ) {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
-
-const uploadUser = multer({
-  storage: imgStorage,
-  fileFilter: userFilter,
-});
-const uploadDoc = multer({
-  storage: fileStorage,
-  fileFilter: docFilter,
-});
 
 
 /*================================================================================== */

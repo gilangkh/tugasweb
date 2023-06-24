@@ -12,15 +12,17 @@ const multer =require('multer')
 
 const getAllDocuments = async (req, res) => {
   try {
+    const user_id = req.user.user_id
     const documents = await Document.findAll({
       include: [
         {
           model: User,
           attributes: ['username'],
-          where:{user_id:req.user.user_id}
+
         },
         
-      ]
+      ],
+      where:{user_id:user_id}
     });
 
     res.status(200).json(documents);
