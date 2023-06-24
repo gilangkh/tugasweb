@@ -104,7 +104,7 @@ const deleteSignature = async (req, res) => {
       await signature.destroy();
 
       let response = {
-        message: "data berhasil dihapus",
+        message: "Pengajuan dibatalkan",
       };
       res.status(200).json(response);
     } else {

@@ -179,6 +179,12 @@ app.get("/diajukan", (req, res) => {
       layout: "./layout/layout",
     });
   });
+  app.get("/SignUserDoc/:document_id/:user_id", (req, res) => {
+    res.render("detailUserSign", {
+      title: "Sign Dokumen",
+      layout: "./layout/layout",
+    });
+  });
 
 
   
@@ -192,36 +198,14 @@ app.get("/index", (req, res) => {
     layout: "./layout/layout",
   });
 });
-app.get("/sendsign", (req, res) => {
-  res.render("sendsign", {
-    title: "SendSign",
-    layout: "./layout/layout",
-  });
-});
+
 app.get("/sign", (req, res) => {
   res.render("Sign", {
     title: "Sign",
     layout: "./layout/layout",
   });
 });
-app.get("/tview", (req, res) => {
-  res.render("template-view", {
-    title: "SendSign",
-    layout: "./layout/layout",
-  });
-});
-app.get("/template", (req, res) => {
-  res.render("template", {
-    title: "template    ",
-    layout: "./layout/layout",
-  });
-});
-app.get("/signers", (req, res) => {
-  res.render("signers", {
-    title: "Signer  ",
-    layout: "./layout/layout",
-  });
-});
+
 /*================================================================================== */
 /*                                        END                                        */
 /* ================================================================================= */

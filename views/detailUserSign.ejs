@@ -22,9 +22,8 @@
             <p class="card-text">Oleh Gilang Kharisma</p>
 
 
-            <button type="submit" class="btn btn-success" onclick="signDoc()">Tandatangani</button>
-            <button type="submit" class="btn btn-danger" onclick="decSignDoc()">Tolak</button>
-            <a href="/diajukan" class="btn btn-secondary">Kembali</a>
+            <button type="submit" class="btn btn-danger" onclick="cancelSignDoc()">Batalkan</button>
+            <a href="/mengajukan" class="btn btn-secondary">Kembali</a>
         </div>
     </div>
 </div>
@@ -60,47 +59,7 @@
         })
         .catch(error => console.log('error', error));
 
-
-
-    function signDoc() {
-        const token = sessionStorage.getItem("token");
-
-        if (!token) {
-            alert("Login Terlebih Dahulu")
-            window.location.href = "/login"; // Redirect to the login page if token doesn't exist
-        }
-        const document_id = window.location.pathname.split("/")[2];
-        const user_id = window.location.pathname.split("/")[3];
-        const myHeaders = new Headers()
-        myHeaders.append('authorization', 'Bearer ' + token)
-
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch(`http://localhost:3000/sign/${document_id}/${user_id}`, requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                if(result.message!="Document berhasil ditandatangani")
-                {
-                 console.log(result)
-                 alert("bersil menanda tangani")
-                 window.location.href="/diajukan"
-                }
-                else{
-                alert("Berhasil Menandatangani") 
-                window.location.href="/diajukan"  
-                } 
-            })
-
-            .catch(error => console.log('error', error));
-
-    }
-
-    function decSignDoc() {
+    function cancelSignDoc() {
         const token = sessionStorage.getItem("token");
 
         if (!token) {
@@ -118,18 +77,18 @@
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:3000/decline/${document_id}/${user_id}`, requestOptions)
+        fetch(`http://localhost:3000/signature/${document_id}/${user_id}/delete`, requestOptions)
             .then(response => response.json())
             .then(result => {
-                if(result.message!="permintaan berhasil di tolak")
+                if(result.message!="document berhasil dibatalkan")
                 {
                  console.log(result.message)
                  alert(result.message)
-                 window.location.href="/diajukan"
+                 window.location.href="/mengajukan"
                 }
                 else{
-                alert("Berhasil Menolak") 
-                window.location.href="/diajukan"  
+                alert("Berhasil diabatalkan") 
+                window.location.href="/signature"  
                 }    
             })
             .catch(error => console.log('error', error));

@@ -95,7 +95,7 @@ router.get('/signature/index',SignatureController.getAllSignature)
 router.post('/signature/create',SignatureController.createSignature)
 router.get('/signature/:document_id/:user_id',SignatureController.getOneSignature)
 router.post('/signature/:document_id/update',SignatureController.updateSignature)
-router.post('/signature/:document_id/delete',SignatureController.deleteSignature)
+router.post('/signature/:document_id/:user_id/delete',SignatureController.deleteSignature)
 
 // ---V1
 
