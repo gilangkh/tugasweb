@@ -3,6 +3,8 @@
   height: 100%;
   background: linear-gradient(180deg, #ffffff 0%, #237aac 100%);
   overflow-x: hidden;
+  /* background: hsl(219, 100%, 86%); */
+  /* background: #4a5d5c; */
 }
 
 #margin-form {
@@ -18,14 +20,15 @@
   height: 60px;
   display: flex;
   align-items: center;
-  padding: 0 30px 0 20px;
+  padding: 0 0px 0 0px;
   gap: 20px;
   transition: all 0.1s ease-in-out;
 }
 
 .margin-items :hover {
   border-left: 5px solid #b1384c;
-  background-color: #f6768b;
+  /* background-color: #f6768b; */
+  background-color: #5e6464;
   cursor: pointer;
 }
 
@@ -33,12 +36,26 @@
   font-family: "Montserrat";
   font-style: normal;
   line-height: 18px;
-  color: #184240;
+  color: #455959;
+  /* color: #184240; */
   font-size: 20px;
   font-family: Montserrat;
   font-weight: 600;
+  margin: 10px 0px 10px 0px;
   width: 250px;
   height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 30px 0 20px;
+  gap: 20px;
+  text-decoration: none;
+}
+
+.img {
+  width: 100px;
+  height: 100px;
+  /* margin: 50px 0px 100px 0px; */
+  background-color: grey;
 }
 
 .nav-img {
@@ -51,7 +68,6 @@
   height: 982px;
 
   background-color: white;
-  border-right: solid;
   box-shadow: 1px 1px 10px rgba(198, 189, 248, 0.825);
 
   /* border-color: rgb(53, 50, 107); */
@@ -133,6 +149,16 @@ a {
   margin: 30px;
   padding: 10px;
 }
+
+.announcement-container {
+  height: 100%;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 30px;
+  box-shadow: 3px 3px 10px rgb(188, 188, 188);
+  padding: 0px 20px 20px 20px;
+}
+
 .display {
   display: flex;
 }
@@ -142,14 +168,10 @@ a {
   height: 60px;
   background-color: #55556b;
   color: white;
-  box-shadow: 1px 1px 15px #f6768b;
+  /* box-shadow: 1px 1px 15px #f6768b; */
+  box-shadow: 1px 1px 15px hsl(219, 100%, 72%);
 }
-.img {
-  width: 100px;
-  height: 100px;
-  margin: 50px 0px 100px 0px;
-  background-color: grey;
-}
+
 hr {
   color: black;
   background-color: black;
@@ -227,4 +249,9 @@ hr {
   font-size: 14px;
   text-align: center;
   z-index: 9999;
+}
+
+.sign11 {
+  /* padding-left: 30px; */
+  padding-top: 10px;
 }
