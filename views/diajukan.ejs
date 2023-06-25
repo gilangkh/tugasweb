@@ -1,52 +1,75 @@
 <div class="content">
+  <div class="announcement-container">
+    <div class="margin-h">
+      <div class="display">
+        <div
+          class="margin-v"
+          id="ttd1"
+        >
+          <p
+            class="text-center value"
+            id="diajukan"
+          >
+            0
+          </p>
+          <p class="text-center mark2">Menunggu Ditandatangani</p>
+        </div>
 
-  <div class="margin-h">
-    <div class="display">
-      <div class="margin-v" id="ttd1">
-        <p class="text-center value" id="diajukan">0</p>
-        <p class="text-center mark2">Menunggu Ditandatangani</p>
+        <div
+          class="margin-v"
+          id="ttd1"
+        >
+          <p
+            class="text-center value"
+            id="diterima"
+          >
+            0
+          </p>
+          <p class="text-center mark2">Sudah Ditandatangani</p>
+        </div>
+
+        <div
+          class="margin-v"
+          id="ttd1"
+        >
+          <p
+            class="text-center value"
+            id="ditolak"
+          >
+            0
+          </p>
+          <p class="text-center mark2">Dokumen Ditolak</p>
+        </div>
       </div>
+    </div>
 
-      <div class="margin-v" id="ttd1">
-        <p class="text-center value" id="diterima">0</p>
-        <p class="text-center mark2">Sudah Ditandatangani</p>
+    <div style="padding-right: 100px">
+      <div class="">
+        <h1 id="heading">Singnature</h1>
       </div>
-
-      <div class="margin-v" id="ttd1">
-        <p class="text-center value" id="ditolak">0</p>
-        <p class="text-center mark2">Dokumen Ditolak</p>
+      <div class="">
+        <span id="heading2">Your Documents</span>
       </div>
+      <hr />
+      <div>
+        <br />
+      </div>
+      <table class="table table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Nama Surat</th>
+            <th scope="col">Document</th>
+            <th scope="col">Pengaju</th>
+            <th scope="col">Status</th>
+            <th scope="col">action</th>
+          </tr>
+        </thead>
+        <tbody id="signBody">
+          <!-- list pengajuan -->
+        </tbody>
+      </table>
     </div>
-  </div>
-
-  <div style="padding-right: 100px;">
-    <div class="">
-      <h1 id="heading">Singnature</h1>
-    </div>
-    <div class="">
-      <span id="heading2">Your Documents</span>
-    </div>
-    <hr>
-    <div>
-      <br>
-    </div>
-    <table class="table table table-sm">
-      <thead>
-        <tr>
-          <th scope="col">No</th>
-          <th scope="col">Nama Surat</th>
-          <th scope="col">Document</th>
-          <th scope="col">Pengaju</th>
-          <th scope="col">Status</th>
-          <th scope="col">action</th>
-
-        </tr>
-      </thead>
-      <tbody id="signBody">
-        <!-- list pengajuan -->
-
-      </tbody>
-    </table>
   </div>
 </div>
 <script>
@@ -59,22 +82,21 @@
   myHeaders.append("authorization", "Bearer " + token);
 
   var requestOptions = {
-    method: 'GET',
+    method: "GET",
     headers: myHeaders,
-    redirect: 'follow'
+    redirect: "follow",
   };
 
   fetch(`http://localhost:3000/signature/index`, requestOptions)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data)
-      const tbody = document.getElementById("signBody")
-      tbody.innerHTML = ''
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      const tbody = document.getElementById("signBody");
+      tbody.innerHTML = "";
 
-      data.forEach(sign => {
-
-        console.log(sign.document_id)
-        const row = document.createElement("tr")
+      data.forEach((sign) => {
+        console.log(sign.document_id);
+        const row = document.createElement("tr");
         row.innerHTML = `    
               <td>1</td>
               <td>${sign.Document.name}</td>
@@ -85,43 +107,43 @@
                 <a href="signDoc/${sign.document_id}/${sign.user_id}" type="button" class="btn btn-primary">Detail</a>
               </td>
                 `;
-        tbody.appendChild(row)
+        tbody.appendChild(row);
       });
     })
-    .catch(error => console.log('error', error));
+    .catch((error) => console.log("error", error));
 
   fetch("http://localhost:3000/sign/waiting", requestOptions)
-    .then(response => response.json())
-    .then(result => {
-      console.log(result)
-      document.getElementById("diajukan").innerText = result
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result);
+      document.getElementById("diajukan").innerText = result;
     })
-    .catch(error => console.log('error', error));
+    .catch((error) => console.log("error", error));
 
   fetch("http://localhost:3000/sign/signed", requestOptions)
-    .then(response => response.json())
-    .then(result => {
-      console.log(result)
-      document.getElementById("diterima").innerText = result
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result);
+      document.getElementById("diterima").innerText = result;
     })
-    .catch(error => console.log('error', error));
+    .catch((error) => console.log("error", error));
 
   fetch("http://localhost:3000/sign/rejected", requestOptions)
-    .then(response => response.json())
-    .then(result => {
-      console.log(result)
-      document.getElementById("ditolak").innerText = result
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result);
+      document.getElementById("ditolak").innerText = result;
     })
-    .catch(error => console.log('error', error));
+    .catch((error) => console.log("error", error));
 
   // Mendapatkan parameter URL
   const urlParams = new URLSearchParams(window.location.search);
-  const flashMessage = urlParams.get('flashMessage');
+  const flashMessage = urlParams.get("flashMessage");
 
   // Menampilkan notifikasi flash message jika ada
   if (flashMessage) {
-    const notification = document.createElement('div');
-    notification.className = 'flash-message';
+    const notification = document.createElement("div");
+    notification.className = "flash-message";
     notification.innerText = flashMessage;
 
     // Menambahkan notifikasi ke dalam dokumen
