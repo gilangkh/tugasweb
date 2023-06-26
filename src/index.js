@@ -8,18 +8,16 @@ import Login from './components/Login';
 const port = 8080; // Ganti dengan port yang Anda inginkan
 
 ReactDOM.render(
-  <Router history={createBrowserHistory({ basename: '/', forceRefresh: false, port })}>
-    <App />
-  </Router>,
+  <h1>TEST HOSTING</h1>,
   document.getElementById('root')
 );
 
-ReactDOM.render(
-  <React.StrictMode>
-    <div id="root">
-      <Login />
-    </div>
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <div id="root">
+//       <Login />
+//     </div>
+//   </React.StrictMode>,
+//   document.getElementById('root')
+// );
 
