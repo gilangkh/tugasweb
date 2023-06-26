@@ -49,7 +49,7 @@
         redirect: 'follow'
     };
 
-    fetch(`http://localhost:3000/user/${userId}`, requestOptions)
+    fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/user/${userId}`, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result);
@@ -80,7 +80,7 @@
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:3000/user/${userId}/update`, requestOptionsupdate)
+        fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/user/${userId}/update`, requestOptionsupdate)
             .then(response => response.json())
             .then(result => {
                 console.log(result);

@@ -74,7 +74,7 @@
                 redirect: 'follow'
             };
 
-            const response = await fetch('http://localhost:3000/document/index', requestOptions);
+            const response = await fetch('http://tugasweb.eastus2.cloudapp.azure.com:3000/document/index', requestOptions);
             const result = await response.json();
 
             console.log(result);
@@ -116,7 +116,7 @@
                 redirect: 'follow'
             };
 
-            const response = await fetch("http://localhost:3000/user/index", requestOptions);
+            const response = await fetch("http://tugasweb.eastus2.cloudapp.azure.com:3000/user/index", requestOptions);
             const data = await response.json();
 
             console.log(data);
@@ -177,7 +177,7 @@
             redirect: 'follow'
         };
 
-        fetch("http://localhost:3000/signature/create", requestOptions)
+        fetch("http://tugasweb.eastus2.cloudapp.azure.com:3000/signature/create", requestOptions)
             .then(response => response.text())
             .then(result => console.log(result))
             .catch(error => console.log('error', error))

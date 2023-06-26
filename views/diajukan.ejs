@@ -87,7 +87,7 @@
     redirect: "follow",
   };
 
-  fetch(`http://localhost:3000/signature/index`, requestOptions)
+  fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/signature/index`, requestOptions)
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
@@ -112,7 +112,7 @@
     })
     .catch((error) => console.log("error", error));
 
-  fetch("http://localhost:3000/sign/waiting", requestOptions)
+  fetch("http://tugasweb.eastus2.cloudapp.azure.com:3000/sign/waiting", requestOptions)
     .then((response) => response.json())
     .then((result) => {
       console.log(result);
@@ -120,7 +120,7 @@
     })
     .catch((error) => console.log("error", error));
 
-  fetch("http://localhost:3000/sign/signed", requestOptions)
+  fetch("http://tugasweb.eastus2.cloudapp.azure.com:3000/sign/signed", requestOptions)
     .then((response) => response.json())
     .then((result) => {
       console.log(result);
@@ -128,7 +128,7 @@
     })
     .catch((error) => console.log("error", error));
 
-  fetch("http://localhost:3000/sign/rejected", requestOptions)
+  fetch("http://tugasweb.eastus2.cloudapp.azure.com:3000/sign/rejected", requestOptions)
     .then((response) => response.json())
     .then((result) => {
       console.log(result);

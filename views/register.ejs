@@ -126,7 +126,7 @@
     document.body.appendChild(loadingScreen);
 
       try {
-        const response = await fetch('http://localhost:3000/user/create', requestOptions);
+        const response = await fetch('http://tugasweb.eastus2.cloudapp.azure.com:3000/user/create', requestOptions);
         const data = await response.json();
         console.log(data);
         // Redirect to login page or show success message

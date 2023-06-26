@@ -38,7 +38,7 @@
     redirect: "follow",
   };
 
-  fetch("http://localhost:3000/document/index", requestOptions)
+  fetch("http://tugasweb.eastus2.cloudapp.azure.com:3000/document/index", requestOptions)
     .then((response) => response.json())
     .then((result) => {
       console.log(result);

@@ -60,7 +60,7 @@
         redirect: 'follow'
     }
 
-    fetch(`http://localhost:3000/document/${document_id}`, requestOptions)
+    fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/document/${document_id}`, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)
@@ -90,7 +90,7 @@
         body:formData
         };
 
-        fetch(`http://localhost:3000/document/${document_id}/update`,requestUpdate)
+        fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/document/${document_id}/update`,requestUpdate)
         .then(response => response.json())
         .then(result=>{
             console.log(result)

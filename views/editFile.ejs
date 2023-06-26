@@ -61,7 +61,7 @@
         redirect: 'follow'
     }
 
-    fetch(`http://localhost:3000/document/${document_id}`, requestOptions)
+    fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/document/${document_id}`, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)
@@ -102,7 +102,7 @@
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:3000/fileDOc/${document_id}/update`, requestfileUpdate)
+        fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/fileDOc/${document_id}/update`, requestfileUpdate)
             .then(response => response.json())
             .then(result => {
                 

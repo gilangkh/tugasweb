@@ -50,7 +50,7 @@
         redirect: 'follow'
     };
 
-    fetch(`http://localhost:3000/signature/${document_id}/${user_id}`, requestOptions)
+    fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/signature/${document_id}/${user_id}`, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result);
@@ -81,7 +81,7 @@
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:3000/sign/${document_id}/${user_id}`, requestOptions)
+        fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/sign/${document_id}/${user_id}`, requestOptions)
             .then(response => response.text())
             .then(result => {
                 if(result.message!="Document berhasil ditandatangani")
@@ -118,7 +118,7 @@
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:3000/decline/${document_id}/${user_id}`, requestOptions)
+        fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/decline/${document_id}/${user_id}`, requestOptions)
             .then(response => response.json())
             .then(result => {
                 if(result.message!="permintaan berhasil di tolak")

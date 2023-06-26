@@ -40,7 +40,7 @@
       redirect: 'follow'
     };
 
-    fetch("http://localhost:3000/user/index", requestOptions)
+    fetch("http://tugasweb.eastus2.cloudapp.azure.com:3000/user/index", requestOptions)
       .then(response => response.json())
       .then(data => {
         const tableBody = document.getElementById("userTableBody");
