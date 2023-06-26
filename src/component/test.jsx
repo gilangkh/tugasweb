@@ -23,6 +23,9 @@ import Sign from './components/view/Sign';
 import TemplateView from './components/view/TemplateView';
 import Template from './components/view/Template';
 import Signers from './components/view/Signers';
+import React from 'react';
+import Header from './Header';
+import Footer from './Footer';
 
 function App() {
   return (
