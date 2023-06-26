@@ -185,8 +185,8 @@ const signDoc = async (req, res) => {
 
         const pdfBytes = await pdfDoc.save();
 // 
-        const outputFileName = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\document\\', docPDF.filename);
-        const targetDirectory = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\old_document\\', docPDF.filename);
+        const outputFileName = path.join('/home/azureuser/tugasweb/public/document/', docPDF.filename);
+        const targetDirectory = path.join('/home/azureuser/tugasweb/public/old_document/', docPDF.filename);
         const newFilePath = path.join(targetDirectory);
 
         fs.renameSync(outputFileName, newFilePath);
