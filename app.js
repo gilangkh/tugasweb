@@ -32,7 +32,7 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.use(cors());
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'http://tugasweb.eastus2.cloudapp.azure.com:3000'
 }));
 app.use("/",Router)
 

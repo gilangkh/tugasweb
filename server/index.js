@@ -11,7 +11,7 @@ const session = require('express-session')
 app.use(express.json());
 app.use(cors());
 app.use(cors({
-    origin: 'http://localhost:8000'
+    origin: 'http://tugasweb.eastus2.cloudapp.azure.com:8000'
   }));
   
 app.use(express.static("public"));
