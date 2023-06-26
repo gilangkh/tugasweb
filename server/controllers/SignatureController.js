@@ -162,9 +162,7 @@ const signDoc = async (req, res) => {
     const docPDF = await Document.findOne({ where: { document_id: document_id } });
 
     const docUrl = 'E:\\Magang Lea\\inventaris\\tugasweb\\public\\document\\' + docPDF.filename;
-    const imgUrl = 'E:\\Magang Lea\\inventaris\\tugasweb\\public\\images\\' + img.sign_img; // URL gambar
-
-   
+    const imgUrl = __dirname+img.sign_img; // URL gambar
  
         const imageData = fs.readFileSync(imgUrl);
         const pdfData = fs.readFileSync(docUrl);
@@ -186,7 +184,7 @@ const signDoc = async (req, res) => {
         });
 
         const pdfBytes = await pdfDoc.save();
-
+// 
         const outputFileName = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\document\\', docPDF.filename);
         const targetDirectory = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\old_document\\', docPDF.filename);
         const newFilePath = path.join(targetDirectory);
