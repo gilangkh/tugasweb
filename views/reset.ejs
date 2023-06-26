@@ -20,43 +20,6 @@
   
 
    
-    <script >
-      function handleScriptLoad() {
-        const token = sessionStorage.getItem("token");
-    
-        if (!token) {
-          window.location.href = "/login";
-        } else {
-          try {
-            const tokenParts = token.split(".");
-            if (tokenParts.length !== 3) {
-              throw new Error("Invalid token format");
-            }
-            const encodedPayload = tokenParts[1];
-            const decodedPayload = atob(encodedPayload);
-            const payload = JSON.parse(decodedPayload);
-            console.log(payload);
-    
-            const currentTimestamp = Math.floor(Date.now() / 1000);
-    
-            if (payload.exp < currentTimestamp) {
-              alert("Sesi Anda Telah Berakhir")
-              window.location.href = "/login";
-            }
-          } catch (error) {
-            console.error("Failed to decode token:", error);
-            window.location.href = "/register?message=" + encodeURIComponent(error);
-          }
-        }
-      }
-    
-      function handleScriptError() {
-        console.error("Failed to load the jwt-decode library.");
-        // Handle the error accordingly (e.g., redirect to an error page)
-      }
-    
-      handleScriptLoad(); 
-    </script>
     
 </head>
 

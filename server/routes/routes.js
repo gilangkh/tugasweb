@@ -63,8 +63,8 @@ const uploadDoc = multer({
 // AUth
 router.post('/login',AuthController.login);
 router.post('/user/create',uploadUser.single('sign_img'), UserController.createUser);
-router.post('/logout',Middleware,AuthController.logout);
 router.post('/user/reset',UserController.resetPassword)
+router.post('/logout',Middleware,AuthController.logout);
 router.post('/user/password/',UserController.resetPassword)
 // TEST-------------------------------------------------------------------------------
 router.use(Middleware)

@@ -100,7 +100,7 @@ app.get('/change/:user_id',(req,res)=>{
 
 app.get("/reset", (req, res) => {
   res.render("reset", {
-    title: "profile",
+    title: "Reset Passowrd",
     layout: false,
   });
 });
