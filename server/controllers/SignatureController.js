@@ -162,7 +162,7 @@ const signDoc = async (req, res) => {
     const docPDF = await Document.findOne({ where: { document_id: document_id } });
 
     const docUrl = 'E:\\Magang Lea\\inventaris\\tugasweb\\public\\document\\' + docPDF.filename;
-    const imgUrl = __dirname+"../../public/images/"+img.sign_img; // URL gambar
+    const imgUrl ='/home/azureuser/tugasweb/public/images/'+img.sign_img; // URL gambar
  
         const imageData = fs.readFileSync(imgUrl);
         const pdfData = fs.readFileSync(docUrl);
