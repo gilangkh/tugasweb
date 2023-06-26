@@ -52,7 +52,7 @@
     redirect: "follow",
   };
 
-  fetch(`http://localhost:3000/signature/userIndex`, requestOptions)
+  fetch(`http://tugasweb.eastus2.cloudapp.azure.com:3000/signature/userIndex`, requestOptions)
     .then((response) => response.json())
     .then((data) => {
       console.log(data);

@@ -20,8 +20,8 @@
         <div class="col-md-2">
           <a id="editProfileBtn" class="btn btn-secondary" name="btnAddMore" value="Edit Profile">Edit Profile</a>
           <a id="editPassword" class="btn btn-primary" name="btnAddMore" value="Edit Profile">Edit Password</a>
-       </div>
-     
+        </div>
+
       </div>
       <div class="row">
         <div class="col-md-4">
@@ -85,7 +85,7 @@
           redirect: 'follow'
         };
 
-        fetch("http://localhost:3000/profile", requestOptions)
+        fetch("http://tugasweb.eastus2.cloudapp.azure.com:3000/profile", requestOptions)
           .then(response => response.json())
           .then(data => {
             const {
@@ -102,7 +102,7 @@
             const editProfileBtn = document.getElementById("editProfileBtn");
             const editPasswordBtn = document.getElementById("editPassword");
             editProfileBtn.href = `/user/${user.user_id}`;
-            editPasswordBtn.href = "/reset?message="+user.user_id
+            editPasswordBtn.href = "/reset?message=" + user.user_id
           })
           .catch(error => console.log('error', error));
       }
