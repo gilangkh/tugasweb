@@ -139,7 +139,7 @@ app.get("/dokumen/:dokument",(req,res)=>{
   });
 })
 app.get("/fileDoc/:document_id",(req,res)=>{
-  res.render("editFIle", {
+  res.render("editFile", {
     title: "Edit Dokumen",
     layout: "./layout/layout",
   });

@@ -67,8 +67,8 @@ const updateDocument = async (req, res) => {
     const updatedDocument = await Document.findOne({
       where: { document_id: document_id },
     });
-     const oldData = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\document',updatedDocument.filename);
-    fs.unlinkSync(oldData)
+    //  const oldData = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\document',updatedDocument.filename);
+    // fs.unlinkSync(oldData)
 
     if (updatedDocument) {
 
@@ -100,8 +100,8 @@ const deleteDocument = async (req, res) => {
     const deletedDocument = await Document.findOne({
       where: { document_id: document_id },
     });
-    const oldData = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\document',deletedDocument.filename);
-    fs.unlinkSync(oldData)
+    // const oldData = path.join('E:\\Magang Lea\\inventaris\\tugasweb\\public\\document',deletedDocument.filename);
+    // fs.unlinkSync(oldData)
 
     if (deletedDocument) {
       await deletedDocument.destroy();
