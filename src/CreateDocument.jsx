@@ -1,37 +1,44 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const CreateDocument = () => {
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    
-    if (!token) {
-      window.location.href = "/login";
-    }
-  }, []);
-
-  const handleSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
 
     const token = sessionStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
 
-    const docForm = new FormData(event.target);
+    const docForm = document.getElementById("docForm");
+    const nama = document.getElementById("names");
+    const fileInput = document.getElementById("filename");
+    const description = document.getElementById("description");
+
+    const formdata = new FormData();
+    formdata.append("name", nama.value);
+    formdata.append("filename", fileInput.files[0]);
+    formdata.append("description", description.value);
+
     const requestOptions = {
       method: 'POST',
       headers: myHeaders,
-      body: docForm,
+      body: formdata,
       redirect: 'follow'
     };
 
-    fetch("http://localhost:3000/document/create", requestOptions)
-      .then(response => response.json())
-      .then(result => {
-        console.log(result);
-        console.log("ini pesan" + result.message);
-        window.location.href = "/dokumen/index";
-      })
-      .catch(error => console.log('error', error));
+    try {
+      const response = await fetch("http://localhost:3000/document/create", requestOptions);
+      const result = await response.json();
+      console.log(result);
+      console.log("ini pesan" + result.message);
+      window.location.href = "/dokumen/index";
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   return (
@@ -51,7 +58,7 @@ const CreateDocument = () => {
         </div>
       </div>
       <div className="row">
-        <form id="docForm" encType="multipart/form-data" onSubmit={handleSubmit}>
+        <form id="docForm" encType="multipart/form-data">
           <div className="col-md-12">
             <div className="tab-content profile-tab" id="myTabContent">
               <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -59,21 +66,21 @@ const CreateDocument = () => {
               <div className="row my-3">
                 <div className="col-md-6">
                   <label htmlFor="names">Nama Document</label>
-                  <input className="form-control" type="text" name="names" id="names" defaultValue="" />
+                  <input className="form-control" type="text" name="names" id="names" value="" />
                 </div>
               </div>
               <div className="row my-3">
                 <div className="col-md-6">
                   <label htmlFor="filename">Filename</label>
                   <div className="d-flex justify-content-between">
-                    <input className="form-control col-md-12" type="file" name="filename" id="filename" />
+                    <input className="form-control col-md-12" type="file" name="filename" id="filename" value="" />
                   </div>
                 </div>
               </div>
               <div className="row my-3">
                 <div className="col-md-6">
                   <label htmlFor="description">Description</label>
-                  <input className="form-control" type="text" name="description" id="description" defaultValue="" />
+                  <input className="form-control" type="text" name="description" id="description" value="" />
                 </div>
               </div>
               <div>
