@@ -17,8 +17,7 @@
 
     <div id="root"></div>
 
-    <script src="./index.js" type="text/javascript"></script>
-
+  <h1>HELLO</h1>
   </body>
  
 </html>
