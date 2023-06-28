@@ -20,5 +20,5 @@
     <script src="./index.js" type="text/javascript"></script>
 
   </body>
-  <!-- bismillah a -->
+ 
 </html>
