@@ -1,7 +1,8 @@
- import React from "react";
-import  ReactDOM  from "react";
+import React from "react";
+import ReactDOM from "react-dom";
 
-let h1 = document.createElement('h1')
+function Gilang() {
+  return <h1>Hello Gilang</h1>;
+}
 
-h1.innerHTML("Hello Gilang")
-document.getElementById("root").appendChild
+ReactDOM.render(<Gilang />, document.getElementById("root"));
