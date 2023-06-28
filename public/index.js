@@ -1,4 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-ReactDOM.render(<h1>Hello Gilang</h1>, document.getElementById("root"));
+function Gilang() {
+  return <h1>Hello Gilang</h1>;
+}
+
+ReactDOM.render(<Gilang />, document.getElementById("root"));
